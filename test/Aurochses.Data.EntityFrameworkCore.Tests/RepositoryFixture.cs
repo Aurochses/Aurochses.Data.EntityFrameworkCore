@@ -23,6 +23,9 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
 
             UnitOfWork.EntityRepository.Insert(new Entity<int>());
             UnitOfWork.Commit();
+
+            UnitOfWork.EntityRepository.Insert(new Entity<int>());
+            UnitOfWork.Commit();
         }
 
         public FakeUnitOfWork UnitOfWork { get; }
