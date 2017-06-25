@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
-    <Version>1.2.0-alpha</Version>
+    <Version>1.2.0</Version>
     <Authors>Aurochses</Authors>
     <Company>Aurochses</Company>
     <Copyright>Aurochses 2017</Copyright>
