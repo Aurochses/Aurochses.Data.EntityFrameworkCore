@@ -1,0 +1,40 @@
+﻿using Aurochses.Data.EntityFrameworkCore.Tests.Fakes;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Moq;
+using Xunit;
+
+namespace Aurochses.Data.EntityFrameworkCore.Tests
+{
+    public class EntityTypeConfigurationTests
+    {
+        [Fact]
+        public void SchemaName_Get_Success()
+        {
+            // Arrange
+            const string schemaName = "dbo";
+
+            var entityTypeConfiguration = new FakeEntityTypeConfiguration(schemaName);
+
+            // Act & Assert
+            Assert.Equal(schemaName, entityTypeConfiguration.SchemaName);
+        }
+
+        [Fact]
+        public void Map_EntityTypeBuilder_Success()
+        {
+            // Arrange
+            var modelBuilder = new ModelBuilder(new ConventionSet());
+            var entityTypeBuilder = modelBuilder.Entity<Entity<int>>();
+
+            var mockEntityTypeConfiguration = new Mock<EntityTypeConfiguration<Entity<int>, int>>(MockBehavior.Strict, "dbo");
+            mockEntityTypeConfiguration.Setup(m => m.Map(entityTypeBuilder)).Verifiable();
+
+            // Act
+            mockEntityTypeConfiguration.Object.Map(entityTypeBuilder);
+
+            // Assert
+            mockEntityTypeConfiguration.Verify();
+        }
+    }
+}
