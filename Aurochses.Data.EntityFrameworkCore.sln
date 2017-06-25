@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F8B145FD-BAEC-40B4-BBBC-4E16D30B6164}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1AA9D91A-4774-4847-937C-1271F0B33AC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurochses.Data.EntityFrameworkCore", "src\Aurochses.Data.EntityFrameworkCore\Aurochses.Data.EntityFrameworkCore.csproj", "{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurochses.Data.EntityFrameworkCore.Tests", "test\Aurochses.Data.EntityFrameworkCore.Tests\Aurochses.Data.EntityFrameworkCore.Tests.csproj", "{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8} = {F8B145FD-BAEC-40B4-BBBC-4E16D30B6164}
+		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40} = {1AA9D91A-4774-4847-937C-1271F0B33AC5}
+	EndGlobalSection
+EndGlobal

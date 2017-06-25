@@ -1,1 +1,1 @@
-# Aurochses.Data.EntityFrameworkCore
+# Aurochses Data EntityFrameworkCore
