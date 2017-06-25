@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <Version>1.2.0-alpha</Version>
+    <Authors>Aurochses</Authors>
+    <Company>Aurochses</Company>
+    <Copyright>Aurochses 2017</Copyright>
+    <Description>Layer to access database with Unit of Work, Repository and Entity classes for Entity Framework Core.</Description>
+    <PackageLicenseUrl>https://github.com/Aurochses/Aurochses.Data.EntityFrameworkCore/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Aurochses/Aurochses.Data.EntityFrameworkCore/wiki</PackageProjectUrl>
+    <PackageIconUrl>https://www.gravatar.com/avatar/cb5925a77e502401f95bf2738b123994?s=64</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Aurochses/Aurochses.Data.EntityFrameworkCore</RepositoryUrl>
+    <PackageTags>Entity Framework Core entity-framework-core EF Data O/RM UnitOfWork Repository Entity</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard1.4\Aurochses.Data.EntityFrameworkCore.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard1.4\Aurochses.Data.EntityFrameworkCore.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aurochses.Data" Version="1.2.0" />
+    <PackageReference Include="AutoMapper" Version="6.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
+  </ItemGroup>
+
+</Project>
