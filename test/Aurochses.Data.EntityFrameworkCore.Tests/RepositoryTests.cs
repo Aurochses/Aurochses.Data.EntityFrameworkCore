@@ -83,7 +83,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             const int id = 1;
 
             // Act
-            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(id);
+            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(_fixture.Mapper, id);
 
             // Assert
             Assert.Equal(id, model.Id);
@@ -93,14 +93,14 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public void GetTModel_EntityNotExistsInRepository_Null()
         {
             // Arrange & Act
-            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(0);
+            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(_fixture.Mapper, 0);
 
             // Assert
             Assert.Null(model);
         }
 
         [Fact]
-        public void Get_Filter_Success()
+        public void Find_Filter_Success()
         {
             // Arrange
             const int id = 1;
@@ -120,7 +120,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             var repository = new Repository<Entity<int>, int>(mockDbContext.Object);
 
             // Act
-            var list = repository.Get(x => x.Id == id);
+            var list = repository.Find(x => x.Id == id);
 
             // Assert
             Assert.Single(list);
@@ -128,13 +128,13 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         }
 
         [Fact]
-        public void GetTModel_Filter_Success()
+        public void FindTModel_Filter_Success()
         {
             // Arrange
             const int id = 1;
 
             // Act
-            var list = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(x => x.Id == id);
+            var list = _fixture.UnitOfWork.EntityRepository.Find<FakeModel>(_fixture.Mapper, x => x.Id == id);
 
             // Assert
             Assert.Single(list);

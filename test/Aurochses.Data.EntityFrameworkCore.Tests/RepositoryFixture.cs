@@ -1,6 +1,5 @@
 ﻿using System;
 using Aurochses.Data.EntityFrameworkCore.Tests.Fakes;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aurochses.Data.EntityFrameworkCore.Tests
@@ -10,7 +9,10 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public RepositoryFixture()
         {
             // automapper
-            Mapper.Initialize(cfg => cfg.CreateMap<Entity<int>, FakeModel>());
+            AutoMapper.Mapper.Initialize(cfg => cfg.CreateMap<Entity<int>, FakeModel>());
+
+            // mapper
+            Mapper = new FakeMapper();
 
             // database
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(RepositoryFixture));
@@ -27,6 +29,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             UnitOfWork.EntityRepository.Insert(new Entity<int>());
             UnitOfWork.Commit();
         }
+
+        public FakeMapper Mapper { get; }
 
         public FakeUnitOfWork UnitOfWork { get; }
 
