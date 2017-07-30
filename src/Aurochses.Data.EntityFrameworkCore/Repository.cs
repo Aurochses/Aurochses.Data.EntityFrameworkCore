@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aurochses.Data.EntityFrameworkCore
@@ -54,11 +53,12 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// Gets model of type T from repository by identifier.
         /// </summary>
         /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="mapper">The mapper.</param>
         /// <param name="id">The identifier.</param>
         /// <returns>TModel.</returns>
-        public virtual TModel Get<TModel>(TType id)
+        public virtual TModel Get<TModel>(IMapper mapper, TType id)
         {
-            return Where(id).ProjectTo<TModel>().FirstOrDefault();
+            return mapper.Map<TModel>(Where(id)).FirstOrDefault();
         }
 
         /// <summary>
@@ -75,53 +75,56 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// Asynchronously gets model of type T from repository by identifier.
         /// </summary>
         /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="mapper">The mapper.</param>
         /// <param name="id">The identifier.</param>
         /// <returns>Task&lt;TModel&gt;.</returns>
-        public virtual async Task<TModel> GetAsync<TModel>(TType id)
+        public virtual async Task<TModel> GetAsync<TModel>(IMapper mapper, TType id)
         {
-            return await Where(id).ProjectTo<TModel>().FirstOrDefaultAsync();
+            return await mapper.Map<TModel>(Where(id)).FirstOrDefaultAsync();
         }
 
         /// <summary>
-        /// Gets enities of type T from repository.
+        /// Finds enities of type T from repository.
         /// </summary>
         /// <param name="filter">Query filter.</param>
         /// <returns><cref>IList{TEntity}</cref>.</returns>
-        public virtual IList<TEntity> Get(Expression<Func<TEntity, bool>> filter = null)
+        public virtual IList<TEntity> Find(Expression<Func<TEntity, bool>> filter = null)
         {
             return Query(filter).ToList();
         }
 
         /// <summary>
-        /// Gets models of type T from repository.
+        /// Finds models of type T from repository.
         /// </summary>
         /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="mapper">The mapper.</param>
         /// <param name="filter">Query filter.</param>
         /// <returns>IList&lt;TModel&gt;.</returns>
-        public virtual IList<TModel> Get<TModel>(Expression<Func<TEntity, bool>> filter = null)
+        public virtual IList<TModel> Find<TModel>(IMapper mapper, Expression<Func<TEntity, bool>> filter = null)
         {
-            return Query(filter).ProjectTo<TModel>().ToList();
+            return mapper.Map<TModel>(Query(filter)).ToList();
         }
 
         /// <summary>
-        /// Asynchronously gets enities of type T from repository.
+        /// Asynchronously finds enities of type T from repository.
         /// </summary>
         /// <param name="filter">Query filter.</param>
         /// <returns><cref>IList{TEntity}</cref>.</returns>
-        public virtual async Task<IList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null)
+        public virtual async Task<IList<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter = null)
         {
             return await Query(filter).ToListAsync();
         }
 
         /// <summary>
-        /// Asynchronously gets models of type T from repository.
+        /// Asynchronously finds models of type T from repository.
         /// </summary>
         /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="mapper">The mapper.</param>
         /// <param name="filter">The filter.</param>
         /// <returns>Task&lt;IList&lt;TModel&gt;&gt;.</returns>
-        public virtual async Task<IList<TModel>> GetAsync<TModel>(Expression<Func<TEntity, bool>> filter = null)
+        public virtual async Task<IList<TModel>> FindAsync<TModel>(IMapper mapper, Expression<Func<TEntity, bool>> filter = null)
         {
-            return await Query(filter).ProjectTo<TModel>().ToListAsync();
+            return await mapper.Map<TModel>(Query(filter)).ToListAsync();
         }
 
         private IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter = null)

@@ -25,7 +25,6 @@ namespace Aurochses.Data.EntityFrameworkCore
         public string SchemaName
         {
             get;
-            private set;
         }
     }
 }
