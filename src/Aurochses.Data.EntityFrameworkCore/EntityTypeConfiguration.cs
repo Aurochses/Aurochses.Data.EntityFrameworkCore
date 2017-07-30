@@ -23,7 +23,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// Gets the name of the schema.
         /// </summary>
         /// <value>The name of the schema.</value>
-        public string SchemaName { get; private set; }
+        public string SchemaName { get; }
 
         /// <summary>
         /// Maps the specified entity type builder.

@@ -43,7 +43,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             const int id = 1;
 
             // Act
-            var model = await _fixture.UnitOfWork.EntityRepository.GetAsync<FakeModel>(id);
+            var model = await _fixture.UnitOfWork.EntityRepository.GetAsync<FakeModel>(_fixture.Mapper, id);
 
             // Assert
             Assert.Equal(id, model.Id);
@@ -53,20 +53,20 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public async Task GetTModelAsync_EntityNotExistsInRepository_Null()
         {
             // Arrange & Act
-            var model = await _fixture.UnitOfWork.EntityRepository.GetAsync<FakeModel>(0);
+            var model = await _fixture.UnitOfWork.EntityRepository.GetAsync<FakeModel>(_fixture.Mapper, 0);
 
             // Assert
             Assert.Null(model);
         }
 
         [Fact]
-        public async Task GetAsync_Filter_Success()
+        public async Task FindAsync_Filter_Success()
         {
             // Arrange
             const int id = 1;
 
             // Act
-            var list = await _fixture.UnitOfWork.EntityRepository.GetAsync(x => x.Id == id);
+            var list = await _fixture.UnitOfWork.EntityRepository.FindAsync(x => x.Id == id);
 
             // Assert
             Assert.Single(list);
@@ -74,13 +74,13 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         }
 
         [Fact]
-        public async Task GetTModelAsync_Filter_Success()
+        public async Task FindTModelAsync_Filter_Success()
         {
             // Arrange
             const int id = 1;
 
             // Act
-            var list = await _fixture.UnitOfWork.EntityRepository.GetAsync<FakeModel>(x => x.Id == id);
+            var list = await _fixture.UnitOfWork.EntityRepository.FindAsync<FakeModel>(_fixture.Mapper, x => x.Id == id);
 
             // Assert
             Assert.Single(list);
