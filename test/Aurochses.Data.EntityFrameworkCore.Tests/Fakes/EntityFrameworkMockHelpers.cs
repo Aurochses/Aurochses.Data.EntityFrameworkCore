@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 
-namespace Aurochses.Data.EntityFrameworkCore.Tests.Helpers
+namespace Aurochses.Data.EntityFrameworkCore.Tests.Fakes
 {
     public static class EntityFrameworkMockHelpers
     {

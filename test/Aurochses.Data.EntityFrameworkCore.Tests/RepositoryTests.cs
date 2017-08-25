@@ -1,5 +1,4 @@
 ﻿using Aurochses.Data.EntityFrameworkCore.Tests.Fakes;
-using Aurochses.Data.EntityFrameworkCore.Tests.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Collections.Generic;
