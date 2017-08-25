@@ -39,6 +39,11 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <value>The database set.</value>
         protected DbSet<TEntity> DbSet => DbContext.Set<TEntity>();
 
+        private IQueryable<TEntity> Where(TType id)
+        {
+            return DbSet.Where(x => x.Id.Equals(id));
+        }
+
         /// <summary>
         /// Gets entity of type T from repository by identifier.
         /// </summary>
@@ -83,6 +88,18 @@ namespace Aurochses.Data.EntityFrameworkCore
             return await mapper.Map<TModel>(Where(id)).FirstOrDefaultAsync();
         }
 
+        private IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter = null)
+        {
+            IQueryable<TEntity> query = DbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return query;
+        }
+
         /// <summary>
         /// Finds enities of type T from repository.
         /// </summary>
@@ -125,23 +142,6 @@ namespace Aurochses.Data.EntityFrameworkCore
         public virtual async Task<IList<TModel>> FindAsync<TModel>(IMapper mapper, Expression<Func<TEntity, bool>> filter = null)
         {
             return await mapper.Map<TModel>(Query(filter)).ToListAsync();
-        }
-
-        private IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = DbSet;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            return query;
-        }
-
-        private IQueryable<TEntity> Where(TType id)
-        {
-            return DbSet.Where(x => x.Id.Equals(id));
         }
 
         /// <summary>
