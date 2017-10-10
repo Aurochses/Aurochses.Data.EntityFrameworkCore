@@ -12,6 +12,9 @@
     <PackageIconUrl>https://www.gravatar.com/avatar/cb5925a77e502401f95bf2738b123994?s=64</PackageIconUrl>
     <RepositoryUrl>https://github.com/Aurochses/Aurochses.Data.EntityFrameworkCore</RepositoryUrl>
     <PackageTags>Entity Framework Core entity-framework-core EF Data O/RM UnitOfWork Repository Entity</PackageTags>
+
+    <!-- Required in both test/product projects. This is a temporary workaround for https://github.com/Microsoft/vstest/issues/800 -->
+    <DebugType>Full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -28,7 +31,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aurochses.Data" Version="1.2.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.3" />
   </ItemGroup>
 
 </Project>
