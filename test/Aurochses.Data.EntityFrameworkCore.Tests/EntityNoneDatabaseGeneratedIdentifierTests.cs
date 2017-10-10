@@ -40,7 +40,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public void Id_Get_Success()
         {
             // Arrange & Act & Assert
-            Assert.NotNull(_entity.Id);
+            Assert.Equal(0, _entity.Id);
         }
 
         [Fact]
@@ -54,23 +54,6 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
 
             // Assert
             Assert.Equal(id, _entity.Id);
-        }
-
-        [Fact]
-        public void IsNew_NewEntityNoneDatabaseGeneratedIdentifier_False()
-        {
-            // Arrange & Act & Assert
-            Assert.False(_entity.IsNew());
-        }
-
-        [Fact]
-        public void MarkAsNew_EntityNoneDatabaseGeneratedIdentifierMarkedAsNew_True()
-        {
-            // Arrange
-            _entity.MarkAsNew();
-
-            // Act & Assert
-            Assert.True(_entity.IsNew());
         }
     }
 }

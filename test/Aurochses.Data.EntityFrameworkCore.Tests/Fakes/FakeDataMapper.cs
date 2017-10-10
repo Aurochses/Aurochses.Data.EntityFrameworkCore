@@ -3,7 +3,7 @@ using AutoMapper.QueryableExtensions;
 
 namespace Aurochses.Data.EntityFrameworkCore.Tests.Fakes
 {
-    public class FakeMapper : IMapper
+    public class FakeDataMapper : IDataMapper
     {
         public IQueryable<TDestination> Map<TDestination>(IQueryable source)
         {

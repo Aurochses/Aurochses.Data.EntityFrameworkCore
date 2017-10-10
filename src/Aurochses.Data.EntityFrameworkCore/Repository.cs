@@ -61,7 +61,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="mapper">The mapper.</param>
         /// <param name="id">The identifier.</param>
         /// <returns>TModel.</returns>
-        public virtual TModel Get<TModel>(IMapper mapper, TType id)
+        public virtual TModel Get<TModel>(IDataMapper mapper, TType id)
         {
             return mapper.Map<TModel>(Where(id)).FirstOrDefault();
         }
@@ -83,7 +83,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="mapper">The mapper.</param>
         /// <param name="id">The identifier.</param>
         /// <returns>Task&lt;TModel&gt;.</returns>
-        public virtual async Task<TModel> GetAsync<TModel>(IMapper mapper, TType id)
+        public virtual async Task<TModel> GetAsync<TModel>(IDataMapper mapper, TType id)
         {
             return await mapper.Map<TModel>(Where(id)).FirstOrDefaultAsync();
         }
@@ -117,7 +117,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="mapper">The mapper.</param>
         /// <param name="filter">Query filter.</param>
         /// <returns>IList&lt;TModel&gt;.</returns>
-        public virtual IList<TModel> Find<TModel>(IMapper mapper, Expression<Func<TEntity, bool>> filter = null)
+        public virtual IList<TModel> Find<TModel>(IDataMapper mapper, Expression<Func<TEntity, bool>> filter = null)
         {
             return mapper.Map<TModel>(Query(filter)).ToList();
         }
@@ -139,7 +139,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="mapper">The mapper.</param>
         /// <param name="filter">The filter.</param>
         /// <returns>Task&lt;IList&lt;TModel&gt;&gt;.</returns>
-        public virtual async Task<IList<TModel>> FindAsync<TModel>(IMapper mapper, Expression<Func<TEntity, bool>> filter = null)
+        public virtual async Task<IList<TModel>> FindAsync<TModel>(IDataMapper mapper, Expression<Func<TEntity, bool>> filter = null)
         {
             return await mapper.Map<TModel>(Query(filter)).ToListAsync();
         }
@@ -182,16 +182,6 @@ namespace Aurochses.Data.EntityFrameworkCore
         public virtual async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> filter = null)
         {
             return await Query(filter).AnyAsync();
-        }
-
-        /// <summary>
-        /// Determines whether the specified entity is new.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
-        /// <returns><c>true</c> if the specified entity is new; otherwise, <c>false</c>.</returns>
-        protected bool IsNew(TEntity entity)
-        {
-            return entity.IsNew();
         }
 
         /// <summary>

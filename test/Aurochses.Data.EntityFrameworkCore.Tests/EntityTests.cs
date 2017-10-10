@@ -57,23 +57,6 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         }
 
         [Fact]
-        public void IsNew_NewEntity_True()
-        {
-            // Arrange & Act & Assert
-            Assert.True(_entity.IsNew());
-        }
-
-        [Fact]
-        public void IsNew_ExistingEntity_False()
-        {
-            // Arrange
-            _entity.Id = 1;
-
-            // Act & Assert
-            Assert.False(_entity.IsNew());
-        }
-
-        [Fact]
         public void Equals_EntityAndNull_False()
         {
             // Arrange & Act & Assert
