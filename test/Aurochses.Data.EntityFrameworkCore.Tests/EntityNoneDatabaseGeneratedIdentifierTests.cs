@@ -40,7 +40,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public void Id_Get_Success()
         {
             // Arrange & Act & Assert
-            Assert.Equal(0, _entity.Id);
+            Assert.Equal(default(int), _entity.Id);
         }
 
         [Fact]

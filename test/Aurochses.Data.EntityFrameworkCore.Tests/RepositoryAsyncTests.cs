@@ -43,7 +43,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             const int id = 1;
 
             // Act
-            var model = await _fixture.UnitOfWork.EntityRepository.GetAsync<FakeModel>(_fixture.Mapper, id);
+            var model = await _fixture.UnitOfWork.EntityRepository.GetAsync<FakeModel>(_fixture.DataMapper, id);
 
             // Assert
             Assert.Equal(id, model.Id);
@@ -53,38 +53,10 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public async Task GetTModelAsync_EntityNotExistsInRepository_Null()
         {
             // Arrange & Act
-            var model = await _fixture.UnitOfWork.EntityRepository.GetAsync<FakeModel>(_fixture.Mapper, 0);
+            var model = await _fixture.UnitOfWork.EntityRepository.GetAsync<FakeModel>(_fixture.DataMapper, 0);
 
             // Assert
             Assert.Null(model);
-        }
-
-        [Fact]
-        public async Task FindAsync_Filter_Success()
-        {
-            // Arrange
-            const int id = 1;
-
-            // Act
-            var list = await _fixture.UnitOfWork.EntityRepository.FindAsync(x => x.Id == id);
-
-            // Assert
-            Assert.Single(list);
-            Assert.Equal(id, list[0].Id);
-        }
-
-        [Fact]
-        public async Task FindTModelAsync_Filter_Success()
-        {
-            // Arrange
-            const int id = 1;
-
-            // Act
-            var list = await _fixture.UnitOfWork.EntityRepository.FindAsync<FakeModel>(_fixture.Mapper, x => x.Id == id);
-
-            // Assert
-            Assert.Single(list);
-            Assert.Equal(id, list[0].Id);
         }
 
         [Fact]
@@ -99,13 +71,6 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         {
             // Arrange & Act & Assert
             Assert.False(await _fixture.UnitOfWork.EntityRepository.ExistsAsync(0));
-        }
-
-        [Fact]
-        public async Task ExistsAsync_Filter_Success()
-        {
-            // Arrange & Act & Assert
-            Assert.True(await _fixture.UnitOfWork.EntityRepository.ExistsAsync(x => x.Id == 1));
         }
 
         [Fact]

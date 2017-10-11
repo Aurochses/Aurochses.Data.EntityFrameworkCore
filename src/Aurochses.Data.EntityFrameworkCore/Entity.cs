@@ -6,7 +6,7 @@ namespace Aurochses.Data.EntityFrameworkCore
     /// <summary>
     /// Entity for data layer.
     /// </summary>
-    /// <typeparam name="TType">The type of the t type.</typeparam>
+    /// <typeparam name="TType">The type of the T type.</typeparam>
     /// <seealso>
     ///     <cref>Aurochses.Data.IEntity{TType}</cref>
     /// </seealso>

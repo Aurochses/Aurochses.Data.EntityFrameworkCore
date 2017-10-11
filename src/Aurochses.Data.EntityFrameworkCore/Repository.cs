@@ -10,8 +10,8 @@ namespace Aurochses.Data.EntityFrameworkCore
     /// <summary>
     /// Repository for data layer
     /// </summary>
-    /// <typeparam name="TEntity">The type of the t entity.</typeparam>
-    /// <typeparam name="TType">The type of the t type.</typeparam>
+    /// <typeparam name="TEntity">The type of the T entity.</typeparam>
+    /// <typeparam name="TType">The type of the T type.</typeparam>
     /// <seealso>
     ///     <cref>Aurochses.Data.IRepository{TEntity, TType}</cref>
     /// </seealso>
@@ -46,9 +46,10 @@ namespace Aurochses.Data.EntityFrameworkCore
 
         /// <summary>
         /// Gets entity of type T from repository by identifier.
+        /// If no entity is found, then null is returned.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>TEntity.</returns>
+        /// <returns><cref>TEntity</cref>.</returns>
         public virtual TEntity Get(TType id)
         {
             return Where(id).FirstOrDefault();
@@ -58,16 +59,17 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// Gets model of type T from repository by identifier.
         /// </summary>
         /// <typeparam name="TModel">The type of the T model.</typeparam>
-        /// <param name="mapper">The mapper.</param>
+        /// <param name="dataMapper">The data mapper.</param>
         /// <param name="id">The identifier.</param>
-        /// <returns>TModel.</returns>
-        public virtual TModel Get<TModel>(IDataMapper mapper, TType id)
+        /// <returns><cref>TModel</cref></returns>
+        public virtual TModel Get<TModel>(IDataMapper dataMapper, TType id)
         {
-            return mapper.Map<TModel>(Where(id)).FirstOrDefault();
+            return dataMapper.Map<TModel>(Where(id)).FirstOrDefault();
         }
 
         /// <summary>
         /// Asynchronously gets entity of type T from repository by identifier.
+        /// If no entity is found, then null is returned.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns><cref>TEntity</cref>.</returns>
@@ -80,12 +82,100 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// Asynchronously gets model of type T from repository by identifier.
         /// </summary>
         /// <typeparam name="TModel">The type of the T model.</typeparam>
-        /// <param name="mapper">The mapper.</param>
+        /// <param name="dataMapper">The data mapper.</param>
         /// <param name="id">The identifier.</param>
-        /// <returns>Task&lt;TModel&gt;.</returns>
-        public virtual async Task<TModel> GetAsync<TModel>(IDataMapper mapper, TType id)
+        /// <returns><cref>Task{TModel}</cref>.</returns>
+        public virtual async Task<TModel> GetAsync<TModel>(IDataMapper dataMapper, TType id)
         {
-            return await mapper.Map<TModel>(Where(id)).FirstOrDefaultAsync();
+            return await dataMapper.Map<TModel>(Where(id)).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Gets entities of type T from repository that satisfies a query parameters.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>IList{TEntity}</cref>.</returns>
+        public IList<TEntity> GetList(QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets models of type T from repository that satisfies a query parameters.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="dataMapper">The data mapper.</param>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>IList{TModel}</cref>.</returns>
+        public IList<TModel> GetList<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Asynchronously gets entities of type T from repository that satisfies a query parameters.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>IList{TEntity}</cref>.</returns>
+        public Task<IList<TEntity>> GetListAsync(QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Asynchronously gets models of type T from repository that satisfies a query parameters.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="dataMapper">The data mapper.</param>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>Task{IList{TModel}}</cref>.</returns>
+        public Task<IList<TModel>> GetListAsync<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets paged list of entities of type T from repository that satisfies a query parameters.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>PagedResult{TEntity}</cref>.</returns>
+        public PagedResult<TEntity> GetPagedList(QueryParameters<TEntity, TType> queryParameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets paged list of models of type T from repository that satisfies a query parameters.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="dataMapper">The data mapper.</param>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>PagedResult{TModel}</cref>.</returns>
+        public PagedResult<TModel> GetPagedList<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Asynchronously gets paged list of entities of type T from repository that satisfies a query parameters.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>Task{PagedResult{TEntity}}</cref>.</returns>
+        public Task<PagedResult<TEntity>> GetPagedListAsync(QueryParameters<TEntity, TType> queryParameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Asynchronously gets paged list of models of type T from repository that satisfies a query parameters.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="dataMapper">The data mapper.</param>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>Task{PagedResult{TModel}}</cref>.</returns>
+        public Task<PagedResult<TModel>> GetPagedListAsync<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters)
+        {
+            throw new NotImplementedException();
         }
 
         private IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter = null)
@@ -101,50 +191,6 @@ namespace Aurochses.Data.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Finds enities of type T from repository.
-        /// </summary>
-        /// <param name="filter">Query filter.</param>
-        /// <returns><cref>IList{TEntity}</cref>.</returns>
-        public virtual IList<TEntity> Find(Expression<Func<TEntity, bool>> filter = null)
-        {
-            return Query(filter).ToList();
-        }
-
-        /// <summary>
-        /// Finds models of type T from repository.
-        /// </summary>
-        /// <typeparam name="TModel">The type of the T model.</typeparam>
-        /// <param name="mapper">The mapper.</param>
-        /// <param name="filter">Query filter.</param>
-        /// <returns>IList&lt;TModel&gt;.</returns>
-        public virtual IList<TModel> Find<TModel>(IDataMapper mapper, Expression<Func<TEntity, bool>> filter = null)
-        {
-            return mapper.Map<TModel>(Query(filter)).ToList();
-        }
-
-        /// <summary>
-        /// Asynchronously finds enities of type T from repository.
-        /// </summary>
-        /// <param name="filter">Query filter.</param>
-        /// <returns><cref>IList{TEntity}</cref>.</returns>
-        public virtual async Task<IList<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter = null)
-        {
-            return await Query(filter).ToListAsync();
-        }
-
-        /// <summary>
-        /// Asynchronously finds models of type T from repository.
-        /// </summary>
-        /// <typeparam name="TModel">The type of the T model.</typeparam>
-        /// <param name="mapper">The mapper.</param>
-        /// <param name="filter">The filter.</param>
-        /// <returns>Task&lt;IList&lt;TModel&gt;&gt;.</returns>
-        public virtual async Task<IList<TModel>> FindAsync<TModel>(IDataMapper mapper, Expression<Func<TEntity, bool>> filter = null)
-        {
-            return await mapper.Map<TModel>(Query(filter)).ToListAsync();
-        }
-
-        /// <summary>
         /// Checks if entity of type T with identifier exists in repository.
         /// </summary>
         /// <param name="id">The identifier.</param>
@@ -152,16 +198,6 @@ namespace Aurochses.Data.EntityFrameworkCore
         public virtual bool Exists(TType id)
         {
             return Where(id).Any();
-        }
-
-        /// <summary>
-        /// Checks if entity of type T exists in repository.
-        /// </summary>
-        /// <param name="filter">Query filter.</param>
-        /// <returns><c>true</c> if exists, <c>false</c> otherwise.</returns>
-        public virtual bool Exists(Expression<Func<TEntity, bool>> filter = null)
-        {
-            return Query(filter).Any();
         }
 
         /// <summary>
@@ -173,15 +209,45 @@ namespace Aurochses.Data.EntityFrameworkCore
         {
             return await Where(id).AnyAsync();
         }
-        
+
         /// <summary>
-        /// Asynchronously checks if entity of type T exists in repository.
+        /// Checks if any entity of type T satisfies a query parameters.
         /// </summary>
-        /// <param name="filter">Query filter.</param>
+        /// <param name="queryParameters">Query parameters.</param>
         /// <returns><c>true</c> if exists, <c>false</c> otherwise.</returns>
-        public virtual async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> filter = null)
+        public bool Exists(QueryParameters<TEntity, TType> queryParameters = null)
         {
-            return await Query(filter).AnyAsync();
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Asynchronously checks if any entity of type T satisfies a query parameters.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><c>true</c> if exists, <c>false</c> otherwise.</returns>
+        public Task<bool> ExistsAsync(QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns a number that represents how many entities in repository satisfy a query parameters.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns>A number that represents how many entities in repository satisfy a query parameters.</returns>
+        public int Count(QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Asynchronously returns a number that represents how many entities in repository satisfy a query parameters.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns>A number that represents how many entities in repository satisfy a query parameters.</returns>
+        public Task<int> CountAsync(QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -253,6 +319,15 @@ namespace Aurochses.Data.EntityFrameworkCore
         }
 
         /// <summary>
+        /// Deletes the specified entity by identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        public virtual void Delete(TType id)
+        {
+            Delete(Get(id));
+        }
+
+        /// <summary>
         /// Deletes the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
@@ -266,15 +341,6 @@ namespace Aurochses.Data.EntityFrameworkCore
             MarkAsDeleted(entity);
 
             DbSet.Remove(entity);
-        }
-
-        /// <summary>
-        /// Deletes the specified entity by identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        public virtual void Delete(TType id)
-        {
-            Delete(Get(id));
         }
     }
 }

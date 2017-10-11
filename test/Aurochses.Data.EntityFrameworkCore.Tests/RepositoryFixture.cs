@@ -11,8 +11,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             // automapper
             AutoMapper.Mapper.Initialize(cfg => cfg.CreateMap<Entity<int>, FakeModel>());
 
-            // mapper
-            Mapper = new FakeMapper();
+            // data mapper
+            DataMapper = new FakeDataMapper();
 
             // database
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(RepositoryFixture));
@@ -30,7 +30,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             UnitOfWork.Commit();
         }
 
-        public FakeMapper Mapper { get; }
+        public FakeDataMapper DataMapper { get; }
 
         public FakeUnitOfWork UnitOfWork { get; }
 

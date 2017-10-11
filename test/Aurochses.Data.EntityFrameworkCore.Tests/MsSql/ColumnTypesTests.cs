@@ -34,11 +34,11 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests.MsSql
         }
 
         [Fact]
-        public void SpecifyNVarCharLength_Value_Equals()
+        public void GetNVarCharWithSpecifiedLength_Value_Equals()
         {
             // Arrange & Act & Assert
-            Assert.Equal("nvarchar(255)", ColumnTypes.SpecifyNVarCharLength());
-            Assert.Equal("nvarchar(100)", ColumnTypes.SpecifyNVarCharLength(100));
+            Assert.Equal("nvarchar(255)", ColumnTypes.GetNVarCharWithSpecifiedLength());
+            Assert.Equal("nvarchar(100)", ColumnTypes.GetNVarCharWithSpecifiedLength(100));
         }
     }
 }

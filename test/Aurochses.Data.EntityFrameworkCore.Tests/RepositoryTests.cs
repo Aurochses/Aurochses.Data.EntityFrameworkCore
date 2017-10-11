@@ -82,7 +82,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             const int id = 1;
 
             // Act
-            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(_fixture.Mapper, id);
+            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(_fixture.DataMapper, id);
 
             // Assert
             Assert.Equal(id, model.Id);
@@ -92,52 +92,10 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public void GetTModel_EntityNotExistsInRepository_Null()
         {
             // Arrange & Act
-            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(_fixture.Mapper, 0);
+            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(_fixture.DataMapper, 0);
 
             // Assert
             Assert.Null(model);
-        }
-
-        [Fact]
-        public void Find_Filter_Success()
-        {
-            // Arrange
-            const int id = 1;
-
-            var mockDbContext = new Mock<DbContext>(MockBehavior.Strict);
-            mockDbContext
-                .Setup(m => m.Set<Entity<int>>())
-                .Returns(
-                    EntityFrameworkMockHelpers.MockDbSet(
-                        new List<Entity<int>>
-                        {
-                            new Entity<int> { Id = id }
-                        }
-                    )
-                );
-
-            var repository = new Repository<Entity<int>, int>(mockDbContext.Object);
-
-            // Act
-            var list = repository.Find(x => x.Id == id);
-
-            // Assert
-            Assert.Single(list);
-            Assert.Equal(id, list[0].Id);
-        }
-
-        [Fact]
-        public void FindTModel_Filter_Success()
-        {
-            // Arrange
-            const int id = 1;
-
-            // Act
-            var list = _fixture.UnitOfWork.EntityRepository.Find<FakeModel>(_fixture.Mapper, x => x.Id == id);
-
-            // Assert
-            Assert.Single(list);
-            Assert.Equal(id, list[0].Id);
         }
 
         [Fact]
@@ -184,30 +142,6 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
 
             // Act & Assert
             Assert.False(repository.Exists(2));
-        }
-
-        [Fact]
-        public void Exists_Filter_Success()
-        {
-            // Arrange
-            const int id = 1;
-
-            var mockDbContext = new Mock<DbContext>(MockBehavior.Strict);
-            mockDbContext
-                .Setup(m => m.Set<Entity<int>>())
-                .Returns(
-                    EntityFrameworkMockHelpers.MockDbSet(
-                        new List<Entity<int>>
-                        {
-                            new Entity<int> { Id = id }
-                        }
-                    )
-                );
-
-            var repository = new Repository<Entity<int>, int>(mockDbContext.Object);
-
-            // Act & Assert
-            Assert.True(repository.Exists(x => x.Id == id));
         }
 
         [Fact]
