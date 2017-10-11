@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Aurochses.Data.Query;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aurochses.Data.EntityFrameworkCore
@@ -44,6 +44,11 @@ namespace Aurochses.Data.EntityFrameworkCore
             return DbSet.Where(x => x.Id.Equals(id));
         }
 
+        private IQueryable<TModel> Where<TModel>(IDataMapper dataMapper, TType id)
+        {
+            return dataMapper.Map<TModel>(Where(id));
+        }
+
         /// <summary>
         /// Gets entity of type T from repository by identifier.
         /// If no entity is found, then null is returned.
@@ -64,7 +69,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <returns><cref>TModel</cref></returns>
         public virtual TModel Get<TModel>(IDataMapper dataMapper, TType id)
         {
-            return dataMapper.Map<TModel>(Where(id)).FirstOrDefault();
+            return Where<TModel>(dataMapper, id).FirstOrDefault();
         }
 
         /// <summary>
@@ -87,7 +92,40 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <returns><cref>Task{TModel}</cref>.</returns>
         public virtual async Task<TModel> GetAsync<TModel>(IDataMapper dataMapper, TType id)
         {
-            return await dataMapper.Map<TModel>(Where(id)).FirstOrDefaultAsync();
+            return await Where<TModel>(dataMapper, id).FirstOrDefaultAsync();
+        }
+
+        private IQueryable<TEntity> Query(QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            IQueryable<TEntity> query = DbSet;
+
+            if (queryParameters == null) return query;
+
+            if (queryParameters.Filter?.Expression != null)
+            {
+                query = query.Where(queryParameters.Filter.Expression);
+            }
+
+            if (queryParameters.Sort?.Expression != null)
+            {
+                query = queryParameters.Sort.SortOrder == SortOrder.Descending
+                    ? query.OrderByDescending(queryParameters.Sort.Expression)
+                    : query.OrderBy(queryParameters.Sort.Expression);
+            }
+
+            if (queryParameters.Page != null && queryParameters.Page.IsValid)
+            {
+                query = query
+                    .Skip(queryParameters.Page.Index * queryParameters.Page.Size)
+                    .Take(queryParameters.Page.Size);
+            }
+
+            return query;
+        }
+
+        private IQueryable<TModel> Query<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            return dataMapper.Map<TModel>(Query(queryParameters));
         }
 
         /// <summary>
@@ -95,9 +133,9 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>IList{TEntity}</cref>.</returns>
-        public IList<TEntity> GetList(QueryParameters<TEntity, TType> queryParameters = null)
+        public virtual IList<TEntity> GetList(QueryParameters<TEntity, TType> queryParameters = null)
         {
-            throw new NotImplementedException();
+            return Query(queryParameters).ToList();
         }
 
         /// <summary>
@@ -107,9 +145,9 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="dataMapper">The data mapper.</param>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>IList{TModel}</cref>.</returns>
-        public IList<TModel> GetList<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        public virtual IList<TModel> GetList<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
         {
-            throw new NotImplementedException();
+            return Query<TModel>(dataMapper, queryParameters).ToList();
         }
 
         /// <summary>
@@ -117,9 +155,9 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>IList{TEntity}</cref>.</returns>
-        public Task<IList<TEntity>> GetListAsync(QueryParameters<TEntity, TType> queryParameters = null)
+        public virtual async Task<IList<TEntity>> GetListAsync(QueryParameters<TEntity, TType> queryParameters = null)
         {
-            throw new NotImplementedException();
+            return await Query(queryParameters).ToListAsync();
         }
 
         /// <summary>
@@ -129,9 +167,18 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="dataMapper">The data mapper.</param>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>Task{IList{TModel}}</cref>.</returns>
-        public Task<IList<TModel>> GetListAsync<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        public virtual async Task<IList<TModel>> GetListAsync<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
         {
-            throw new NotImplementedException();
+            return await Query<TModel>(dataMapper, queryParameters).ToListAsync();
+        }
+
+        private void ValidateQueryParametersForPagedResult(QueryParameters<TEntity, TType> queryParameters)
+        {
+            if (queryParameters == null) throw new ArgumentNullException(nameof(queryParameters), "Query Parameters can't be null.");
+
+            if (queryParameters.Page == null) throw new ArgumentNullException(nameof(queryParameters.Page), "Query Parameters Page can't be null.");
+
+            if (!queryParameters.Page.IsValid) throw new ArgumentException("Query Parameters Page is not valid.", nameof(queryParameters.Page));
         }
 
         /// <summary>
@@ -139,9 +186,21 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>PagedResult{TEntity}</cref>.</returns>
-        public PagedResult<TEntity> GetPagedList(QueryParameters<TEntity, TType> queryParameters)
+        public virtual PagedResult<TEntity> GetPagedList(QueryParameters<TEntity, TType> queryParameters)
         {
-            throw new NotImplementedException();
+            ValidateQueryParametersForPagedResult(queryParameters);
+
+            var items = Query(queryParameters).ToList();
+
+            var totalCount = Count(queryParameters);
+
+            return new PagedResult<TEntity>
+            {
+                PageIndex = queryParameters.Page.Index,
+                PageSize = queryParameters.Page.Size,
+                Items = items,
+                TotalCount = totalCount
+            };
         }
 
         /// <summary>
@@ -151,9 +210,21 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="dataMapper">The data mapper.</param>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>PagedResult{TModel}</cref>.</returns>
-        public PagedResult<TModel> GetPagedList<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters)
+        public virtual PagedResult<TModel> GetPagedList<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters)
         {
-            throw new NotImplementedException();
+            ValidateQueryParametersForPagedResult(queryParameters);
+
+            var items = Query<TModel>(dataMapper, queryParameters).ToList();
+
+            var totalCount = Count(queryParameters);
+
+            return new PagedResult<TModel>
+            {
+                PageIndex = queryParameters.Page.Index,
+                PageSize = queryParameters.Page.Size,
+                Items = items,
+                TotalCount = totalCount
+            };
         }
 
         /// <summary>
@@ -161,9 +232,21 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>Task{PagedResult{TEntity}}</cref>.</returns>
-        public Task<PagedResult<TEntity>> GetPagedListAsync(QueryParameters<TEntity, TType> queryParameters)
+        public virtual async Task<PagedResult<TEntity>> GetPagedListAsync(QueryParameters<TEntity, TType> queryParameters)
         {
-            throw new NotImplementedException();
+            ValidateQueryParametersForPagedResult(queryParameters);
+
+            var items = await Query(queryParameters).ToListAsync();
+
+            var totalCount = await CountAsync(queryParameters);
+
+            return new PagedResult<TEntity>
+            {
+                PageIndex = queryParameters.Page.Index,
+                PageSize = queryParameters.Page.Size,
+                Items = items,
+                TotalCount = totalCount
+            };
         }
 
         /// <summary>
@@ -173,21 +256,21 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="dataMapper">The data mapper.</param>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>Task{PagedResult{TModel}}</cref>.</returns>
-        public Task<PagedResult<TModel>> GetPagedListAsync<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters)
+        public virtual async Task<PagedResult<TModel>> GetPagedListAsync<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters)
         {
-            throw new NotImplementedException();
-        }
+            ValidateQueryParametersForPagedResult(queryParameters);
 
-        private IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter = null)
-        {
-            IQueryable<TEntity> query = DbSet;
+            var items = await Query<TModel>(dataMapper, queryParameters).ToListAsync();
 
-            if (filter != null)
+            var totalCount = await CountAsync(queryParameters);
+
+            return new PagedResult<TModel>
             {
-                query = query.Where(filter);
-            }
-
-            return query;
+                PageIndex = queryParameters.Page.Index,
+                PageSize = queryParameters.Page.Size,
+                Items = items,
+                TotalCount = totalCount
+            };
         }
 
         /// <summary>
@@ -215,9 +298,9 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><c>true</c> if exists, <c>false</c> otherwise.</returns>
-        public bool Exists(QueryParameters<TEntity, TType> queryParameters = null)
+        public virtual bool Exists(QueryParameters<TEntity, TType> queryParameters = null)
         {
-            throw new NotImplementedException();
+            return Query(queryParameters).Any();
         }
 
         /// <summary>
@@ -225,9 +308,23 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><c>true</c> if exists, <c>false</c> otherwise.</returns>
-        public Task<bool> ExistsAsync(QueryParameters<TEntity, TType> queryParameters = null)
+        public virtual async Task<bool> ExistsAsync(QueryParameters<TEntity, TType> queryParameters = null)
         {
-            throw new NotImplementedException();
+            return await Query(queryParameters).AnyAsync();
+        }
+
+        private IQueryable<TEntity> CountQuery(QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            IQueryable<TEntity> query = DbSet;
+
+            if (queryParameters == null) return query;
+
+            if (queryParameters.Filter?.Expression != null)
+            {
+                query = query.Where(queryParameters.Filter.Expression);
+            }
+
+            return query;
         }
 
         /// <summary>
@@ -235,9 +332,9 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns>A number that represents how many entities in repository satisfy a query parameters.</returns>
-        public int Count(QueryParameters<TEntity, TType> queryParameters = null)
+        public virtual int Count(QueryParameters<TEntity, TType> queryParameters = null)
         {
-            throw new NotImplementedException();
+            return CountQuery(queryParameters).Count();
         }
 
         /// <summary>
@@ -245,9 +342,9 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns>A number that represents how many entities in repository satisfy a query parameters.</returns>
-        public Task<int> CountAsync(QueryParameters<TEntity, TType> queryParameters = null)
+        public virtual async Task<int> CountAsync(QueryParameters<TEntity, TType> queryParameters = null)
         {
-            throw new NotImplementedException();
+            return await CountQuery(queryParameters).CountAsync();
         }
 
         /// <summary>
