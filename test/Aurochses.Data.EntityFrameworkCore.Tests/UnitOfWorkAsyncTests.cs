@@ -16,7 +16,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(UnitOfWorkAsyncTests));
 
             _unitOfWork = new FakeUnitOfWork(
-                dbContext => new Repository<Entity<int>, int>(dbContext),
+                dbContext => new FakeRepository(dbContext),
                 dbContextOptionsBuilder.Options,
                 "dbo"
             );
@@ -31,9 +31,9 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public async Task CommitAsync_InsertNewEntity_AffectedOneRow()
         {
             // Arrange
-            var entity = new Entity<int>();
+            var entity = new FakeEntity();
 
-            await _unitOfWork.EntityRepository.InsertAsync(entity);
+            await _unitOfWork.FakeEntityRepository.InsertAsync(entity);
 
             // Act & Assert
             Assert.Equal(1, await _unitOfWork.CommitAsync());
@@ -43,9 +43,9 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public async Task CommitAsync_UdateNonexistentEntity_DataStorageException()
         {
             // Arrange
-            var entity = new Entity<int> { Id = -1 };
+            var entity = new FakeEntity { Id = -1 };
 
-            _unitOfWork.EntityRepository.Update(entity);
+            _unitOfWork.FakeEntityRepository.Update(entity);
 
             // Act & Assert
             await Assert.ThrowsAsync<DataStorageException>(async () => await _unitOfWork.CommitAsync());

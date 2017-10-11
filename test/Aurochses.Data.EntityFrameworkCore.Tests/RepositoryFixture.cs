@@ -18,15 +18,15 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(RepositoryFixture));
 
             UnitOfWork = new FakeUnitOfWork(
-                dbContext => new Repository<Entity<int>, int>(dbContext),
+                dbContext => new FakeRepository(dbContext), 
                 dbContextOptionsBuilder.Options,
                 "dbo"
             );
 
-            UnitOfWork.EntityRepository.Insert(new Entity<int>());
+            UnitOfWork.FakeEntityRepository.Insert(new FakeEntity());
             UnitOfWork.Commit();
 
-            UnitOfWork.EntityRepository.Insert(new Entity<int>());
+            UnitOfWork.FakeEntityRepository.Insert(new FakeEntity());
             UnitOfWork.Commit();
         }
 

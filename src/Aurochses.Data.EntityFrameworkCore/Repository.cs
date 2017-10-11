@@ -95,7 +95,12 @@ namespace Aurochses.Data.EntityFrameworkCore
             return await Where<TModel>(dataMapper, id).FirstOrDefaultAsync();
         }
 
-        private IQueryable<TEntity> Query(QueryParameters<TEntity, TType> queryParameters = null)
+        /// <summary>
+        /// Gets query of type T for repository that satisfies a query parameters.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
+        protected IQueryable<TEntity> Query(QueryParameters<TEntity, TType> queryParameters = null)
         {
             IQueryable<TEntity> query = DbSet;
 
@@ -116,14 +121,21 @@ namespace Aurochses.Data.EntityFrameworkCore
             if (queryParameters.Page != null && queryParameters.Page.IsValid)
             {
                 query = query
-                    .Skip(queryParameters.Page.Index * queryParameters.Page.Size)
+                    .Skip(queryParameters.Page.Size * queryParameters.Page.Index)
                     .Take(queryParameters.Page.Size);
             }
 
             return query;
         }
 
-        private IQueryable<TModel> Query<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        /// <summary>
+        /// Gets query of type T for repository that satisfies a query parameters.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="dataMapper">The data mapper.</param>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
+        protected IQueryable<TModel> Query<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
         {
             return dataMapper.Map<TModel>(Query(queryParameters));
         }
@@ -172,13 +184,32 @@ namespace Aurochses.Data.EntityFrameworkCore
             return await Query<TModel>(dataMapper, queryParameters).ToListAsync();
         }
 
-        private void ValidateQueryParametersForPagedResult(QueryParameters<TEntity, TType> queryParameters)
+        /// <summary>
+        /// Gets query of type T for repository that satisfies a query parameters for paged result.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
+        protected IQueryable<TEntity> PagedResultQuery(QueryParameters<TEntity, TType> queryParameters)
         {
             if (queryParameters == null) throw new ArgumentNullException(nameof(queryParameters), "Query Parameters can't be null.");
 
             if (queryParameters.Page == null) throw new ArgumentNullException(nameof(queryParameters.Page), "Query Parameters Page can't be null.");
 
             if (!queryParameters.Page.IsValid) throw new ArgumentException("Query Parameters Page is not valid.", nameof(queryParameters.Page));
+
+            return Query(queryParameters);
+        }
+
+        /// <summary>
+        /// Gets query of type T for repository that satisfies a query parameters for paged result.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="dataMapper">The data mapper.</param>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
+        protected IQueryable<TModel> PagedResultQuery<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            return dataMapper.Map<TModel>(PagedResultQuery(queryParameters));
         }
 
         /// <summary>
@@ -188,9 +219,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <returns><cref>PagedResult{TEntity}</cref>.</returns>
         public virtual PagedResult<TEntity> GetPagedList(QueryParameters<TEntity, TType> queryParameters)
         {
-            ValidateQueryParametersForPagedResult(queryParameters);
-
-            var items = Query(queryParameters).ToList();
+            var items = PagedResultQuery(queryParameters).ToList();
 
             var totalCount = Count(queryParameters);
 
@@ -212,9 +241,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <returns><cref>PagedResult{TModel}</cref>.</returns>
         public virtual PagedResult<TModel> GetPagedList<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters)
         {
-            ValidateQueryParametersForPagedResult(queryParameters);
-
-            var items = Query<TModel>(dataMapper, queryParameters).ToList();
+            var items = PagedResultQuery<TModel>(dataMapper, queryParameters).ToList();
 
             var totalCount = Count(queryParameters);
 
@@ -234,9 +261,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <returns><cref>Task{PagedResult{TEntity}}</cref>.</returns>
         public virtual async Task<PagedResult<TEntity>> GetPagedListAsync(QueryParameters<TEntity, TType> queryParameters)
         {
-            ValidateQueryParametersForPagedResult(queryParameters);
-
-            var items = await Query(queryParameters).ToListAsync();
+            var items = await PagedResultQuery(queryParameters).ToListAsync();
 
             var totalCount = await CountAsync(queryParameters);
 
@@ -258,9 +283,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <returns><cref>Task{PagedResult{TModel}}</cref>.</returns>
         public virtual async Task<PagedResult<TModel>> GetPagedListAsync<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters)
         {
-            ValidateQueryParametersForPagedResult(queryParameters);
-
-            var items = await Query<TModel>(dataMapper, queryParameters).ToListAsync();
+            var items = await PagedResultQuery<TModel>(dataMapper, queryParameters).ToListAsync();
 
             var totalCount = await CountAsync(queryParameters);
 
@@ -313,7 +336,12 @@ namespace Aurochses.Data.EntityFrameworkCore
             return await Query(queryParameters).AnyAsync();
         }
 
-        private IQueryable<TEntity> CountQuery(QueryParameters<TEntity, TType> queryParameters = null)
+        /// <summary>
+        /// Gets query of type T for repository that satisfies a query parameters for count.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
+        protected IQueryable<TEntity> CountQuery(QueryParameters<TEntity, TType> queryParameters = null)
         {
             IQueryable<TEntity> query = DbSet;
 

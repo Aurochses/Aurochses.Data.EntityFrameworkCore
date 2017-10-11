@@ -14,7 +14,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests.Fakes
 
         public override void Map(EntityTypeBuilder<Entity<int>> entityTypeBuilder)
         {
-            entityTypeBuilder.ToTable("Entity", SchemaName);
+            entityTypeBuilder.ToTable("FakeEntity", SchemaName);
         }
     }
 }

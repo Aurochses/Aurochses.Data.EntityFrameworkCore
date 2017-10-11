@@ -12,7 +12,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests.Fakes
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Entity<int>>();
+            modelBuilder.Entity<FakeEntity>();
         }
     }
 }
