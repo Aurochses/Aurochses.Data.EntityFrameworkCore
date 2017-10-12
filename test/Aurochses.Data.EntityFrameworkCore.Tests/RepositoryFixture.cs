@@ -15,7 +15,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             DataMapper = new FakeDataMapper();
 
             // database
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(RepositoryFixture));
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase($"{nameof(RepositoryFixture)}");
 
             UnitOfWork = new FakeUnitOfWork(
                 dbContext => new FakeRepository(dbContext), 

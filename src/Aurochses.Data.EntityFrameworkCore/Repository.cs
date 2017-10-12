@@ -207,7 +207,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="dataMapper">The data mapper.</param>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
-        protected IQueryable<TModel> PagedResultQuery<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        protected IQueryable<TModel> PagedResultQuery<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters)
         {
             return dataMapper.Map<TModel>(PagedResultQuery(queryParameters));
         }

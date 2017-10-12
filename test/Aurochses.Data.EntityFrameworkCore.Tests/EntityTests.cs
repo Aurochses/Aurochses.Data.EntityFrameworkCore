@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Aurochses.Testing;
+using Aurochses.Xunit;
 using Xunit;
 
 namespace Aurochses.Data.EntityFrameworkCore.Tests
