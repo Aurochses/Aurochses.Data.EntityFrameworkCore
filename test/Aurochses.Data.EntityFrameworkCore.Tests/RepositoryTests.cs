@@ -150,6 +150,15 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             }
         };
 
+        private static void ValidateQueryParametersMemberData(IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            if (queryable == null) throw new ArgumentNullException(nameof(queryable));
+            if (countQueryable == null) throw new ArgumentNullException(nameof(countQueryable));
+
+            Assert.NotNull(queryable);
+            Assert.NotNull(countQueryable);
+        }
+
         #region Get
 
         [Fact]
@@ -188,9 +197,13 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void Query_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            // Arrange & Act
             var expected = queryable.Expression.ToString();
             var actual = _fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery(queryParameters).Expression.ToString();
 
+            // Assert
             Assert.Equal(expected, actual);
         }
 
@@ -198,9 +211,13 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void QueryTModel_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            // Arrange & Act
             var expected = _fixture.DataMapper.Map<FakeModel>(queryable).Expression.ToString();
             var actual = _fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery<FakeModel>(_fixture.DataMapper, queryParameters).Expression.ToString();
 
+            // Assert
             Assert.Equal(expected, actual);
         }
 
@@ -212,6 +229,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void GetList_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
             // Arrange & Act & Assert
             Assert.Equal(_fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery(queryParameters).ToList(), _fixture.UnitOfWork.FakeEntityRepository.GetList(queryParameters));
         }
@@ -220,6 +239,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void GetListTModel_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
             // Arrange & Act & Assert
             ObjectAssert.ValueEquals(_fixture.DataMapper.Map<FakeModel>(_fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery(queryParameters)).ToList(), _fixture.UnitOfWork.FakeEntityRepository.GetList<FakeModel>(_fixture.DataMapper, queryParameters));
         }
@@ -259,6 +280,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void PagedResultQuery_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
             if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
 
             // Arrange & Act
@@ -273,6 +296,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void PagedResultQueryTModel_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
             if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
 
             // Arrange & Act
@@ -291,6 +316,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void GetPagedList_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
             if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
 
             // Arrange
@@ -312,6 +339,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void GetPagedListTModel_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
             if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
 
             // Arrange
@@ -351,6 +380,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void ExistsQueryParameters_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
             // Arrange & Act & Assert
             Assert.Equal(_fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery(queryParameters).Any(), _fixture.UnitOfWork.FakeEntityRepository.Exists(queryParameters));
         }
@@ -363,9 +394,13 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void CountQuery_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            // Arrange & Act
             var expected = countQueryable.Expression.ToString();
             var actual = _fixture.UnitOfWork.FakeEntityRepository.ProtectedCountQuery(queryParameters).Expression.ToString();
 
+            // Assert
             Assert.Equal(expected, actual);
         }
 
@@ -377,6 +412,8 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         [MemberData(nameof(QueryParametersMemberData))]
         public void Count_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
             // Arrange & Act & Assert
             Assert.Equal(_fixture.UnitOfWork.FakeEntityRepository.ProtectedCountQuery(queryParameters).Count(), _fixture.UnitOfWork.FakeEntityRepository.Count(queryParameters));
         }
