@@ -5,8 +5,8 @@ namespace Aurochses.Data.EntityFrameworkCore
     /// <summary>
     /// EntityTypeConfiguration.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the t entity.</typeparam>
-    /// <typeparam name="TKey">The type of the t key.</typeparam>
+    /// <typeparam name="TEntity">The type of the T entity.</typeparam>
+    /// <typeparam name="TKey">The type of the T key.</typeparam>
     public abstract class EntityTypeConfiguration<TEntity, TKey>
         where TEntity : class, IEntity<TKey>
     {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Aurochses.Data.EntityFrameworkCore.Tests.Fakes;
 using Aurochses.Data.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -7,48 +6,44 @@ using Xunit;
 
 namespace Aurochses.Data.EntityFrameworkCore.Tests
 {
-    public class UnitOfWorkAsyncTests : IDisposable
+    public class UnitOfWorkAsyncTests
     {
-        private readonly FakeUnitOfWork _unitOfWork;
-
-        public UnitOfWorkAsyncTests()
-        {
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(UnitOfWorkAsyncTests));
-
-            _unitOfWork = new FakeUnitOfWork(
-                dbContext => new Repository<Entity<int>, int>(dbContext),
-                dbContextOptionsBuilder.Options,
-                "dbo"
-            );
-        }
-
-        public void Dispose()
-        {
-            _unitOfWork.Dispose();
-        }
-
         [Fact]
         public async Task CommitAsync_InsertNewEntity_AffectedOneRow()
         {
             // Arrange
-            var entity = new Entity<int>();
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(CommitAsync_InsertNewEntity_AffectedOneRow));
+            var unitOfWork = new FakeUnitOfWork(
+                dbContext => new FakeRepository(dbContext),
+                dbContextOptionsBuilder.Options,
+                "dbo"
+            );
 
-            await _unitOfWork.EntityRepository.InsertAsync(entity);
+            var entity = new FakeEntity();
+
+            await unitOfWork.FakeEntityRepository.InsertAsync(entity);
 
             // Act & Assert
-            Assert.Equal(1, await _unitOfWork.CommitAsync());
+            Assert.Equal(1, await unitOfWork.CommitAsync());
         }
 
         [Fact]
         public async Task CommitAsync_UdateNonexistentEntity_DataStorageException()
         {
             // Arrange
-            var entity = new Entity<int> { Id = -1 };
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(CommitAsync_UdateNonexistentEntity_DataStorageException));
+            var unitOfWork = new FakeUnitOfWork(
+                dbContext => new FakeRepository(dbContext),
+                dbContextOptionsBuilder.Options,
+                "dbo"
+            );
 
-            _unitOfWork.EntityRepository.Update(entity);
+            var entity = new FakeEntity { Id = -1 };
+
+            unitOfWork.FakeEntityRepository.Update(entity);
 
             // Act & Assert
-            await Assert.ThrowsAsync<DataStorageException>(async () => await _unitOfWork.CommitAsync());
+            await Assert.ThrowsAsync<DataStorageException>(async () => await unitOfWork.CommitAsync());
         }
     }
 }

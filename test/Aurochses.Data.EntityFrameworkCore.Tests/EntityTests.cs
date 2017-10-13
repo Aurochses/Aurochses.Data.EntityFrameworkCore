@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Aurochses.Testing;
+using Aurochses.Xunit;
 using Xunit;
 
 namespace Aurochses.Data.EntityFrameworkCore.Tests
@@ -40,7 +40,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public void Id_Get_Success()
         {
             // Arrange & Act & Assert
-            Assert.NotNull(_entity.Id);
+            Assert.Equal(default(int), _entity.Id);
         }
 
         [Fact]
@@ -54,23 +54,6 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
 
             // Assert
             Assert.Equal(id, _entity.Id);
-        }
-
-        [Fact]
-        public void IsNew_NewEntity_True()
-        {
-            // Arrange & Act & Assert
-            Assert.True(_entity.IsNew());
-        }
-
-        [Fact]
-        public void IsNew_ExistingEntity_False()
-        {
-            // Arrange
-            _entity.Id = 1;
-
-            // Act & Assert
-            Assert.False(_entity.IsNew());
         }
 
         [Fact]
