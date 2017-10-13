@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Aurochses.Data.EntityFrameworkCore.Tests.Fakes;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,28 +12,36 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             // automapper
             AutoMapper.Mapper.Initialize(cfg => cfg.CreateMap<Entity<int>, FakeModel>());
 
-            // mapper
-            Mapper = new FakeMapper();
+            // data mapper
+            DataMapper = new FakeDataMapper();
 
             // database
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(RepositoryFixture));
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<FakeDbContext>().UseInMemoryDatabase($"{nameof(RepositoryFixture)}{Guid.NewGuid():N}");
 
             UnitOfWork = new FakeUnitOfWork(
-                dbContext => new Repository<Entity<int>, int>(dbContext),
+                dbContext => new FakeRepository(dbContext),
                 dbContextOptionsBuilder.Options,
                 "dbo"
             );
 
-            UnitOfWork.EntityRepository.Insert(new Entity<int>());
+            UnitOfWork.FakeEntityRepository.Insert(new FakeEntity());
+            UnitOfWork.FakeEntityRepository.Insert(new FakeEntity());
+            UnitOfWork.FakeEntityRepository.Insert(new FakeEntity());
+            UnitOfWork.FakeEntityRepository.Insert(new FakeEntity());
+            UnitOfWork.FakeEntityRepository.Insert(new FakeEntity());
             UnitOfWork.Commit();
 
-            UnitOfWork.EntityRepository.Insert(new Entity<int>());
-            UnitOfWork.Commit();
+            ExistingFakeEntity = UnitOfWork.FakeEntityRepository.GetList().First();
+            ExistingFakeModel = UnitOfWork.FakeEntityRepository.GetList<FakeModel>(DataMapper).First();
         }
 
-        public FakeMapper Mapper { get; }
+        public FakeDataMapper DataMapper { get; }
 
         public FakeUnitOfWork UnitOfWork { get; }
+
+        public FakeEntity ExistingFakeEntity { get; }
+
+        public FakeModel ExistingFakeModel { get; }
 
         public void Dispose()
         {

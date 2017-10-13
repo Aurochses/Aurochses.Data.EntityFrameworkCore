@@ -1,9 +1,11 @@
-﻿using Aurochses.Data.EntityFrameworkCore.Tests.Fakes;
-using Aurochses.Data.EntityFrameworkCore.Tests.Helpers;
+﻿using System;
+using Aurochses.Data.EntityFrameworkCore.Tests.Fakes;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
+using Aurochses.Data.Query;
+using Aurochses.Xunit;
 using Xunit;
 
 namespace Aurochses.Data.EntityFrameworkCore.Tests
@@ -30,186 +32,395 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             Assert.IsAssignableFrom<IRepository<Entity<int>, int>>(repository);
         }
 
-        [Fact]
-        public void Get_EntityExistsInRepository_EqualById()
+        private static DbSet<FakeEntity> DbSet => new FakeDbContext(new DbContextOptionsBuilder<FakeDbContext>().UseInMemoryDatabase($"{nameof(RepositoryTests)}{Guid.NewGuid():N}").Options, "dbo").Set<FakeEntity>();
+
+        public static IEnumerable<object[]> QueryParametersMemberData => new[]
         {
-            // Arrange
-            const int id = 1;
+            new object[]
+            {
+                null,
+                DbSet.AsQueryable(),
+                DbSet.AsQueryable()
+            },
+            new object[]
+            {
+                new QueryParameters<FakeEntity, int>(),
+                DbSet.AsQueryable(),
+                DbSet.AsQueryable()
+            },
+            new object[]
+            {
+                new QueryParameters<FakeEntity, int>
+                {
+                    Filter = new FilterRule<FakeEntity, int>(),
+                    Sort = new SortRule<FakeEntity, int>(),
+                    Page = new PageRule()
+                },
+                DbSet.AsQueryable(),
+                DbSet.AsQueryable()
+            },
 
-            var mockDbContext = new Mock<DbContext>(MockBehavior.Strict);
-            mockDbContext
-                .Setup(m => m.Set<Entity<int>>())
-                .Returns(
-                    EntityFrameworkMockHelpers.MockDbSet(
-                        new List<Entity<int>>
-                        {
-                            new Entity<int> { Id = id }
-                        }
-                    )
-                );
+            new object[]
+            {
+                new QueryParameters<FakeEntity, int>
+                {
+                    Filter = new FilterRule<FakeEntity, int>
+                    {
+                        Expression = x => x.Id == 1
+                    }
+                },
+                DbSet.AsQueryable().Where(x => x.Id == 1),
+                DbSet.AsQueryable().Where(x => x.Id == 1)
+            },
 
-            var repository = new Repository<Entity<int>, int>(mockDbContext.Object);
+            new object[]
+            {
+                new QueryParameters<FakeEntity, int>
+                {
+                    Sort = new SortRule<FakeEntity, int>
+                    {
+                        Expression = x => x.Id
+                    }
+                },
+                DbSet.AsQueryable().OrderBy(x => (object) x.Id),
+                DbSet.AsQueryable()
+            },
+            new object[]
+            {
+                new QueryParameters<FakeEntity, int>
+                {
+                    Sort = new SortRule<FakeEntity, int>
+                    {
+                        SortOrder = SortOrder.Ascending,
+                        Expression = x => x.Id
+                    }
+                },
+                DbSet.AsQueryable().OrderBy(x => (object) x.Id),
+                DbSet.AsQueryable()
+            },
+            new object[]
+            {
+                new QueryParameters<FakeEntity, int>
+                {
+                    Sort = new SortRule<FakeEntity, int>
+                    {
+                        SortOrder = SortOrder.Descending,
+                        Expression = x => x.Id
+                    }
+                },
+                DbSet.AsQueryable().OrderByDescending(x => (object) x.Id),
+                DbSet.AsQueryable()
+            },
 
-            // Act & Assert
-            Assert.Equal(id, repository.Get(id).Id);
+            new object[]
+            {
+                new QueryParameters<FakeEntity, int>
+                {
+                    Page = new PageRule
+                    {
+                        Index = 1,
+                        Size = 5
+                    }
+                },
+                DbSet.AsQueryable().Skip(5 * 1).Take(5),
+                DbSet.AsQueryable()
+            },
+
+            new object[]
+            {
+                new QueryParameters<FakeEntity, int>
+                {
+                    Filter = new FilterRule<FakeEntity, int>
+                    {
+                        Expression = x => x.Id == 1
+                    },
+                    Sort = new SortRule<FakeEntity, int>
+                    {
+                        SortOrder = SortOrder.Descending,
+                        Expression = x => x.Id
+                    },
+                    Page = new PageRule
+                    {
+                        Index = 1,
+                        Size = 5
+                    }
+                },
+                DbSet.AsQueryable().Where(x => x.Id == 1).OrderByDescending(x => (object) x.Id).Skip(5 * 1).Take(5),
+                DbSet.AsQueryable().Where(x => x.Id == 1)
+            }
+        };
+
+        private static void ValidateQueryParametersMemberData(IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            if (queryable == null) throw new ArgumentNullException(nameof(queryable));
+            if (countQueryable == null) throw new ArgumentNullException(nameof(countQueryable));
+
+            Assert.NotNull(queryable);
+            Assert.NotNull(countQueryable);
+        }
+
+        #region Get
+
+        [Fact]
+        public void Get_EntityExistsInRepository_Entity()
+        {
+            // Arrange & Act & Assert
+            ObjectAssert.ValueEquals(_fixture.ExistingFakeEntity, _fixture.UnitOfWork.FakeEntityRepository.Get(_fixture.ExistingFakeEntity.Id));
         }
 
         [Fact]
         public void Get_EntityNotExistsInRepository_Null()
         {
-            // Arrange
-            var mockDbContext = new Mock<DbContext>(MockBehavior.Strict);
-            mockDbContext
-                .Setup(m => m.Set<Entity<int>>())
-                .Returns(
-                    EntityFrameworkMockHelpers.MockDbSet(
-                        new List<Entity<int>>
-                        {
-                            new Entity<int> { Id = 1 }
-                        }
-                    )
-                );
-
-            var repository = new Repository<Entity<int>, int>(mockDbContext.Object);
-
-            // Act & Assert
-            Assert.Null(repository.Get(2));
+            // Arrange & Act & Assert
+            Assert.Null(_fixture.UnitOfWork.FakeEntityRepository.Get(0));
         }
 
         [Fact]
-        public void GetTModel_EntityExistsInRepository_EqualById()
+        public void GetTModel_EntityExistsInRepository_Model()
         {
-            // Arrange
-            const int id = 1;
-
-            // Act
-            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(_fixture.Mapper, id);
-
-            // Assert
-            Assert.Equal(id, model.Id);
+            // Arrange & Act & Assert
+            ObjectAssert.ValueEquals(_fixture.ExistingFakeModel, _fixture.UnitOfWork.FakeEntityRepository.Get<FakeModel>(_fixture.DataMapper, _fixture.ExistingFakeModel.Id));
         }
 
         [Fact]
         public void GetTModel_EntityNotExistsInRepository_Null()
         {
+            // Arrange & Act & Assert
+            Assert.Null(_fixture.UnitOfWork.FakeEntityRepository.Get<FakeModel>(_fixture.DataMapper, 0));
+        }
+
+        #endregion
+
+        #region Query
+
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void Query_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
             // Arrange & Act
-            var model = _fixture.UnitOfWork.EntityRepository.Get<FakeModel>(_fixture.Mapper, 0);
+            var expected = queryable.Expression.ToString();
+            var actual = _fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery(queryParameters).Expression.ToString();
 
             // Assert
-            Assert.Null(model);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void QueryTModel_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            // Arrange & Act
+            var expected = _fixture.DataMapper.Map<FakeModel>(queryable).Expression.ToString();
+            var actual = _fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery<FakeModel>(_fixture.DataMapper, queryParameters).Expression.ToString();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
+        #region GetList
+
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void GetList_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            // Arrange & Act & Assert
+            Assert.Equal(_fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery(queryParameters).ToList(), _fixture.UnitOfWork.FakeEntityRepository.GetList(queryParameters));
+        }
+
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void GetListTModel_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            // Arrange & Act & Assert
+            ObjectAssert.ValueEquals(_fixture.DataMapper.Map<FakeModel>(_fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery(queryParameters)).ToList(), _fixture.UnitOfWork.FakeEntityRepository.GetList<FakeModel>(_fixture.DataMapper, queryParameters));
+        }
+
+        #endregion
+
+        #region PagedResultQuery
+
+        [Fact]
+        public void PagedResultQuery_QueryParametersIsNull_ArgumentNullException()
+        {
+            // Arrange & Act & Assert
+            var exception = Assert.Throws<ArgumentNullException>(() => _fixture.UnitOfWork.FakeEntityRepository.ProtectedPagedResultQuery(null));
+            Assert.Equal("queryParameters", exception.ParamName);
+            Assert.Equal("Query Parameters can't be null.\r\nParameter name: queryParameters", exception.Message);
         }
 
         [Fact]
-        public void Find_Filter_Success()
+        public void PagedResultQuery_QueryParametersPageIsNull_ArgumentNullException()
         {
-            // Arrange
-            const int id = 1;
-
-            var mockDbContext = new Mock<DbContext>(MockBehavior.Strict);
-            mockDbContext
-                .Setup(m => m.Set<Entity<int>>())
-                .Returns(
-                    EntityFrameworkMockHelpers.MockDbSet(
-                        new List<Entity<int>>
-                        {
-                            new Entity<int> { Id = id }
-                        }
-                    )
-                );
-
-            var repository = new Repository<Entity<int>, int>(mockDbContext.Object);
-
-            // Act
-            var list = repository.Find(x => x.Id == id);
-
-            // Assert
-            Assert.Single(list);
-            Assert.Equal(id, list[0].Id);
+            // Arrange & Act & Assert
+            var exception = Assert.Throws<ArgumentNullException>(() => _fixture.UnitOfWork.FakeEntityRepository.ProtectedPagedResultQuery(new QueryParameters<FakeEntity, int> { Page = null }));
+            Assert.Equal("Page", exception.ParamName);
+            Assert.Equal("Query Parameters Page can't be null.\r\nParameter name: Page", exception.Message);
         }
 
         [Fact]
-        public void FindTModel_Filter_Success()
+        public void PagedResultQuery_QueryParametersPageIsNotValid_ArgumentException()
         {
-            // Arrange
-            const int id = 1;
+            // Arrange & Act & Assert
+            var exception = Assert.Throws<ArgumentException>(() => _fixture.UnitOfWork.FakeEntityRepository.ProtectedPagedResultQuery(new QueryParameters<FakeEntity, int> { Page = new PageRule { Size = 0 } }));
+            Assert.Equal("Page", exception.ParamName);
+            Assert.Equal("Query Parameters Page is not valid.\r\nParameter name: Page", exception.Message);
+        }
 
-            // Act
-            var list = _fixture.UnitOfWork.EntityRepository.Find<FakeModel>(_fixture.Mapper, x => x.Id == id);
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void PagedResultQuery_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
+
+            // Arrange & Act
+            var expected = queryable.Expression.ToString();
+            var actual = _fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery(queryParameters).Expression.ToString();
 
             // Assert
-            Assert.Single(list);
-            Assert.Equal(id, list[0].Id);
+            Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void PagedResultQueryTModel_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
+
+            // Arrange & Act
+            var expected = _fixture.DataMapper.Map<FakeModel>(queryable).Expression.ToString();
+            var actual = _fixture.UnitOfWork.FakeEntityRepository.ProtectedPagedResultQuery<FakeModel>(_fixture.DataMapper, queryParameters).Expression.ToString();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
+        #region GetPagedList
+
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void GetPagedList_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
+
+            // Arrange
+            var pagedResultQuery = _fixture.UnitOfWork.FakeEntityRepository.ProtectedPagedResultQuery(queryParameters);
+
+            var expectedPagedResult = new PagedResult<FakeEntity>
+            {
+                PageIndex = queryParameters.Page.Index,
+                PageSize = queryParameters.Page.Size,
+                Items = pagedResultQuery.ToList(),
+                TotalCount = _fixture.UnitOfWork.FakeEntityRepository.Count(queryParameters)
+            };
+
+            // Act & Assert
+            ObjectAssert.ValueEquals(expectedPagedResult, _fixture.UnitOfWork.FakeEntityRepository.GetPagedList(queryParameters));
+        }
+
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void GetPagedListTModel_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
+
+            // Arrange
+            var pagedResultQuery = _fixture.UnitOfWork.FakeEntityRepository.ProtectedPagedResultQuery<FakeModel>(_fixture.DataMapper, queryParameters);
+
+            var expectedPagedResult = new PagedResult<FakeModel>
+            {
+                PageIndex = queryParameters.Page.Index,
+                PageSize = queryParameters.Page.Size,
+                Items = pagedResultQuery.ToList(),
+                TotalCount = _fixture.UnitOfWork.FakeEntityRepository.Count(queryParameters)
+            };
+
+            // Act & Assert
+            ObjectAssert.ValueEquals(expectedPagedResult, _fixture.UnitOfWork.FakeEntityRepository.GetPagedList<FakeModel>(_fixture.DataMapper, queryParameters));
+        }
+
+        #endregion
+
+        #region Exists
 
         [Fact]
         public void Exists_EntityExistsInRepository_True()
         {
-            // Arrange
-            const int id = 1;
-
-            var mockDbContext = new Mock<DbContext>(MockBehavior.Strict);
-            mockDbContext
-                .Setup(m => m.Set<Entity<int>>())
-                .Returns(
-                    EntityFrameworkMockHelpers.MockDbSet(
-                        new List<Entity<int>>
-                        {
-                            new Entity<int> { Id = id }
-                        }
-                    )
-                );
-
-            var repository = new Repository<Entity<int>, int>(mockDbContext.Object);
-
-            // Act & Assert
-            Assert.True(repository.Exists(id));
+            // Arrange & Act & Assert
+            Assert.True(_fixture.UnitOfWork.FakeEntityRepository.Exists(_fixture.ExistingFakeEntity.Id));
         }
 
         [Fact]
         public void Exists_EntityNotExistsInRepository_False()
         {
-            // Arrange
-            var mockDbContext = new Mock<DbContext>(MockBehavior.Strict);
-            mockDbContext
-                .Setup(m => m.Set<Entity<int>>())
-                .Returns(
-                    EntityFrameworkMockHelpers.MockDbSet(
-                        new List<Entity<int>>
-                        {
-                            new Entity<int> { Id = 1 }
-                        }
-                    )
-                );
-
-            var repository = new Repository<Entity<int>, int>(mockDbContext.Object);
-
-            // Act & Assert
-            Assert.False(repository.Exists(2));
+            // Arrange & Act & Assert
+            Assert.False(_fixture.UnitOfWork.FakeEntityRepository.Exists(0));
         }
 
-        [Fact]
-        public void Exists_Filter_Success()
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void ExistsQueryParameters_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
         {
-            // Arrange
-            const int id = 1;
+            ValidateQueryParametersMemberData(queryable, countQueryable);
 
-            var mockDbContext = new Mock<DbContext>(MockBehavior.Strict);
-            mockDbContext
-                .Setup(m => m.Set<Entity<int>>())
-                .Returns(
-                    EntityFrameworkMockHelpers.MockDbSet(
-                        new List<Entity<int>>
-                        {
-                            new Entity<int> { Id = id }
-                        }
-                    )
-                );
-
-            var repository = new Repository<Entity<int>, int>(mockDbContext.Object);
-
-            // Act & Assert
-            Assert.True(repository.Exists(x => x.Id == id));
+            // Arrange & Act & Assert
+            Assert.Equal(_fixture.UnitOfWork.FakeEntityRepository.ProtectedQuery(queryParameters).Any(), _fixture.UnitOfWork.FakeEntityRepository.Exists(queryParameters));
         }
+
+        #endregion
+
+        #region CountQuery
+
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void CountQuery_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            // Arrange & Act
+            var expected = countQueryable.Expression.ToString();
+            var actual = _fixture.UnitOfWork.FakeEntityRepository.ProtectedCountQuery(queryParameters).Expression.ToString();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
+        #region Count
+
+        [Theory]
+        [MemberData(nameof(QueryParametersMemberData))]
+        public void Count_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
+        {
+            ValidateQueryParametersMemberData(queryable, countQueryable);
+
+            // Arrange & Act & Assert
+            Assert.Equal(_fixture.UnitOfWork.FakeEntityRepository.ProtectedCountQuery(queryParameters).Count(), _fixture.UnitOfWork.FakeEntityRepository.Count(queryParameters));
+        }
+
+        #endregion
+
+        #region Insert
 
         [Fact]
         public void Insert_NewEntity_Inserted()
@@ -217,9 +428,9 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             // Arrange
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Insert_NewEntity_Inserted));
             var fakeDbContext = new FakeDbContext(dbContextOptionsBuilder.Options, "dbo");
-            var repository = new Repository<Entity<int>, int>(fakeDbContext);
+            var repository = new Repository<FakeEntity, int>(fakeDbContext);
 
-            var entity = new Entity<int>();
+            var entity = new FakeEntity();
 
             // Act
             var insertedEntity = repository.Insert(entity);
@@ -229,6 +440,10 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             Assert.Equal(entity.Id, insertedEntity.Id);
         }
 
+        #endregion
+
+        #region Update
+
         [Fact]
         public void Update_ExistingEntity_Updated()
         {
@@ -237,10 +452,10 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
 
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Update_ExistingEntity_Updated));
             var fakeDbContext = new FakeDbContext(dbContextOptionsBuilder.Options, "dbo");
-            var entity = fakeDbContext.Add(new Entity<int> { Id = id }).Entity;
+            var entity = fakeDbContext.Add(new FakeEntity { Id = id }).Entity;
             fakeDbContext.SaveChanges();
 
-            var repository = new Repository<Entity<int>, int>(fakeDbContext);
+            var repository = new Repository<FakeEntity, int>(fakeDbContext);
 
             // Act
             entity = repository.Update(entity);
@@ -250,48 +465,75 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             Assert.Equal(id, entity.Id);
         }
 
-        [Fact]
-        public void Delete_ExistingEntity_Deleted()
-        {
-            // Arrange
-            const int id = 13;
+        #endregion
 
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Delete_ExistingEntity_Deleted));
-            var fakeDbContext = new FakeDbContext(dbContextOptionsBuilder.Options, "dbo");
-            var entity = fakeDbContext.Add(new Entity<int> { Id = id }).Entity;
-            fakeDbContext.SaveChanges();
-
-            fakeDbContext.Entry(entity).State = EntityState.Detached;
-
-            var repository = new Repository<Entity<int>, int>(fakeDbContext);
-
-            // Act
-            repository.Delete(entity);
-            fakeDbContext.SaveChanges();
-
-            // Assert
-            Assert.Equal(0, fakeDbContext.Set<Entity<int>>().Count());
-        }
+        #region Delete
 
         [Fact]
-        public void Delete_ExistingEntity_DeletedById()
+        public void DeleteById_ExistingEntity_Deleted()
         {
             // Arrange
-            const int id = 15;
+            const int id = 20;
 
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Delete_ExistingEntity_DeletedById));
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(DeleteById_ExistingEntity_Deleted));
             var fakeDbContext = new FakeDbContext(dbContextOptionsBuilder.Options, "dbo");
-            fakeDbContext.Add(new Entity<int> { Id = id });
+            fakeDbContext.Add(new FakeEntity { Id = id });
             fakeDbContext.SaveChanges();
 
-            var repository = new Repository<Entity<int>, int>(fakeDbContext);
+            var repository = new Repository<FakeEntity, int>(fakeDbContext);
 
             // Act
             repository.Delete(id);
             fakeDbContext.SaveChanges();
 
             // Assert
-            Assert.Equal(0, fakeDbContext.Set<Entity<int>>().Count());
+            Assert.False(fakeDbContext.Set<FakeEntity>().Any(x => x.Id == id));
         }
+
+        [Fact]
+        public void Delete_ExistingEntity_Deleted()
+        {
+            // Arrange
+            const int id = 30;
+
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Delete_ExistingEntity_Deleted));
+            var fakeDbContext = new FakeDbContext(dbContextOptionsBuilder.Options, "dbo");
+            var entity = fakeDbContext.Add(new FakeEntity { Id = id }).Entity;
+            fakeDbContext.SaveChanges();
+
+            var repository = new Repository<FakeEntity, int>(fakeDbContext);
+
+            // Act
+            repository.Delete(entity);
+            fakeDbContext.SaveChanges();
+
+            // Assert
+            Assert.False(fakeDbContext.Set<FakeEntity>().Any(x => x.Id == id));
+        }
+
+        [Fact]
+        public void Delete_ExistingDetachedEntity_Deleted()
+        {
+            // Arrange
+            const int id = 40;
+
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Delete_ExistingEntity_Deleted));
+            var fakeDbContext = new FakeDbContext(dbContextOptionsBuilder.Options, "dbo");
+            var entity = fakeDbContext.Add(new FakeEntity { Id = id }).Entity;
+            fakeDbContext.SaveChanges();
+
+            fakeDbContext.Entry(entity).State = EntityState.Detached;
+
+            var repository = new Repository<FakeEntity, int>(fakeDbContext);
+
+            // Act
+            repository.Delete(entity);
+            fakeDbContext.SaveChanges();
+
+            // Assert
+            Assert.False(fakeDbContext.Set<FakeEntity>().Any(x => x.Id == id));
+        }
+
+        #endregion
     }
 }
