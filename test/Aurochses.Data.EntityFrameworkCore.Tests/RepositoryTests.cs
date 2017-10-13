@@ -156,7 +156,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public void Get_EntityExistsInRepository_Entity()
         {
             // Arrange & Act & Assert
-            ObjectAssert.ValueEquals(new FakeEntity { Id = 1 }, _fixture.UnitOfWork.FakeEntityRepository.Get(1));
+            ObjectAssert.ValueEquals(_fixture.ExistingFakeEntity, _fixture.UnitOfWork.FakeEntityRepository.Get(_fixture.ExistingFakeEntity.Id));
         }
 
         [Fact]
@@ -170,7 +170,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public void GetTModel_EntityExistsInRepository_Model()
         {
             // Arrange & Act & Assert
-            ObjectAssert.ValueEquals(new FakeModel { Id = 1 }, _fixture.UnitOfWork.FakeEntityRepository.Get<FakeModel>(_fixture.DataMapper, 1));
+            ObjectAssert.ValueEquals(_fixture.ExistingFakeModel, _fixture.UnitOfWork.FakeEntityRepository.Get<FakeModel>(_fixture.DataMapper, _fixture.ExistingFakeModel.Id));
         }
 
         [Fact]
@@ -337,7 +337,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         public void Exists_EntityExistsInRepository_True()
         {
             // Arrange & Act & Assert
-            Assert.True(_fixture.UnitOfWork.FakeEntityRepository.Exists(1));
+            Assert.True(_fixture.UnitOfWork.FakeEntityRepository.Exists(_fixture.ExistingFakeEntity.Id));
         }
 
         [Fact]
