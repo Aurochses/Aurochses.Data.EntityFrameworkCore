@@ -6,6 +6,7 @@ Aurochses Data Entity Framework Core is a layer to access database with Unit of 
 
 [![NuGet](https://img.shields.io/nuget/v/Aurochses.Data.EntityFrameworkCore.svg?style=flat-square)](https://www.nuget.org/packages/Aurochses.Data.EntityFrameworkCore)
 [![NuGet](https://img.shields.io/nuget/dt/Aurochses.Data.EntityFrameworkCore.svg?style=flat-square)](https://www.nuget.org/packages/Aurochses.Data.EntityFrameworkCore)
+[![NuGet Status](http://nugetstatus.com/Aurochses.Data.EntityFrameworkCore.png)](http://nugetstatus.com/packages/Aurochses.Data.EntityFrameworkCore)
 
 ## Builds
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aurochses.Data.EntityFrameworkCore
@@ -7,7 +6,7 @@ namespace Aurochses.Data.EntityFrameworkCore
     /// <summary>
     /// Entity for data layer.
     /// </summary>
-    /// <typeparam name="TType">The type of the t type.</typeparam>
+    /// <typeparam name="TType">The type of the T type.</typeparam>
     /// <seealso>
     ///     <cref>Aurochses.Data.IEntity{TType}</cref>
     /// </seealso>
@@ -20,15 +19,6 @@ namespace Aurochses.Data.EntityFrameworkCore
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual TType Id { get; set; }
-
-        /// <summary>
-        /// Determines whether this instance is new.
-        /// </summary>
-        /// <returns><c>true</c> if this instance is new; otherwise, <c>false</c>.</returns>
-        public virtual bool IsNew()
-        {
-            return Id.Equals(Activator.CreateInstance(typeof(TType)));
-        }
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.

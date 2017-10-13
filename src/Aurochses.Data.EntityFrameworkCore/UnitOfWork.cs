@@ -128,8 +128,8 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <summary>
         /// Registers repository instance.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the t entity.</typeparam>
-        /// <typeparam name="TType">The type of the t type.</typeparam>
+        /// <typeparam name="TEntity">The type of the T entity.</typeparam>
+        /// <typeparam name="TType">The type of the T type.</typeparam>
         /// <param name="repository">The repository.</param>
         protected void RegisterRepository<TEntity, TType>(IRepository<TEntity, TType> repository)
             where TEntity : IEntity<TType>
@@ -140,9 +140,9 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <summary>
         /// Gets the repository for specified entity type.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the t entity.</typeparam>
-        /// <typeparam name="TType">The type of the t type.</typeparam>
-        /// <returns>IRepository&lt;TEntity, TType&gt;.</returns>
+        /// <typeparam name="TEntity">The type of the T entity.</typeparam>
+        /// <typeparam name="TType">The type of the T type.</typeparam>
+        /// <returns>IRepository{TEntity, TType}.</returns>
         protected virtual IRepository<TEntity, TType> GetRepository<TEntity, TType>()
             where TEntity : IEntity<TType>
         {

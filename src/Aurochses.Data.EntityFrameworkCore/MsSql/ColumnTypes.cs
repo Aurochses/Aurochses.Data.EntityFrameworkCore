@@ -26,11 +26,11 @@
         public const string Date = "date";
 
         /// <summary>
-        /// Specifies the length of the n variable character.
+        /// Gets NVarChar with specified length.
         /// </summary>
         /// <param name="length">The length.</param>
-        /// <returns>System.String.</returns>
-        public static string SpecifyNVarCharLength(int length = ColumnLengths.DefaultNVarChar)
+        /// <returns><cref>System.String</cref>.</returns>
+        public static string GetNVarCharWithSpecifiedLength(int length = ColumnLengths.DefaultNVarChar)
         {
             return $"{NVarChar}({length})";
         }

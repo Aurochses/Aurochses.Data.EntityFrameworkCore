@@ -51,7 +51,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
 
             using (unitOfWork = new FakeUnitOfWork())
             {
-                var repository = unitOfWork.EntityRepository;
+                var repository = unitOfWork.FakeEntityRepository;
 
                 if (repository == null) throw new ArgumentNullException(nameof(repository));
             }
@@ -62,7 +62,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             // Assert
             try
             {
-                var repository = unitOfWork.EntityRepository;
+                var repository = unitOfWork.FakeEntityRepository;
 
                 if (repository == null) throw new ArgumentNullException(nameof(repository));
             }
@@ -78,7 +78,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             // Arrange
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Dispose_FalseDispose_Success));
             var unitOfWork = new FakeUnitOfWork(
-                dbContext => new Repository<Entity<int>, int>(dbContext),
+                dbContext => new FakeRepository(dbContext), 
                 dbContextOptionsBuilder.Options,
                 "dbo"
             );
@@ -87,7 +87,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             unitOfWork.DoNotDispose();
 
             // Assert
-            Assert.NotNull(unitOfWork.EntityRepository);
+            Assert.NotNull(unitOfWork.FakeEntityRepository);
         }
 
         [Fact]
@@ -96,14 +96,14 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             // Arrange
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Commit_InsertNewEntity_AffectedOneRow));
             var unitOfWork = new FakeUnitOfWork(
-                dbContext => new Repository<Entity<int>, int>(dbContext),
+                dbContext => new FakeRepository(dbContext), 
                 dbContextOptionsBuilder.Options,
                 "dbo"
             );
 
-            var entity = new Entity<int>();
+            var entity = new FakeEntity();
 
-            unitOfWork.EntityRepository.Insert(entity);
+            unitOfWork.FakeEntityRepository.Insert(entity);
 
             // Act & Assert
             Assert.Equal(1, unitOfWork.Commit());
@@ -115,14 +115,14 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             // Arrange
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Commit_UdateNonexistentEntity_DataStorageException));
             var unitOfWork = new FakeUnitOfWork(
-                dbContext => new Repository<Entity<int>, int>(dbContext),
+                dbContext => new FakeRepository(dbContext),
                 dbContextOptionsBuilder.Options,
                 "dbo"
             );
 
-            var entity = new Entity<int> { Id = -1 };
+            var entity = new FakeEntity { Id = -1 };
 
-            unitOfWork.EntityRepository.Update(entity);
+            unitOfWork.FakeEntityRepository.Update(entity);
 
             // Act & Assert
             Assert.Throws<DataStorageException>(() => unitOfWork.Commit());

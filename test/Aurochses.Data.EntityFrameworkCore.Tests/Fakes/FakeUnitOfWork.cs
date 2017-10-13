@@ -6,21 +6,21 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests.Fakes
     public class FakeUnitOfWork : UnitOfWork
     {
         public FakeUnitOfWork(
-            Func<DbContext, IRepository<Entity<int>, int>> entityRepository,
+            Func<DbContext, FakeRepository> fakeEntityRepository,
             DbContextOptions dbContextOptions,
             string schemaName)
             : base(new FakeDbContext(dbContextOptions, schemaName))
         {
-            RegisterRepository(entityRepository(DbContext));
+            RegisterRepository(fakeEntityRepository(DbContext));
         }
 
         public FakeUnitOfWork()
             : base(null)
         {
-            RegisterRepository(new Repository<Entity<int>, int>(DbContext));
+            RegisterRepository(new FakeRepository(DbContext));
         }
 
-        public IRepository<Entity<int>, int> EntityRepository => GetRepository<Entity<int>, int>();
+        public FakeRepository FakeEntityRepository => (FakeRepository) GetRepository<FakeEntity, int>();
 
         public void DoNotDispose()
         {
