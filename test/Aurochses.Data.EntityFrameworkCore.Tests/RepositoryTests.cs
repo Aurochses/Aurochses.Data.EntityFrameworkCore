@@ -7,10 +7,11 @@ using System.Linq;
 using Aurochses.Data.Query;
 using Aurochses.Xunit;
 using Xunit;
+using Aurochses.Data.Helpers;
 
 namespace Aurochses.Data.EntityFrameworkCore.Tests
 {
-    public class RepositoryTests : IClassFixture<RepositoryFixture>
+    public partial class RepositoryTests : IClassFixture<RepositoryFixture>
     {
         private readonly RepositoryFixture _fixture;
 
@@ -158,38 +159,6 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             Assert.NotNull(queryable);
             Assert.NotNull(countQueryable);
         }
-
-        #region Get
-
-        [Fact]
-        public void Get_EntityExistsInRepository_Entity()
-        {
-            // Arrange & Act & Assert
-            ObjectAssert.ValueEquals(_fixture.ExistingFakeEntity, _fixture.UnitOfWork.FakeEntityRepository.Get(_fixture.ExistingFakeEntity.Id));
-        }
-
-        [Fact]
-        public void Get_EntityNotExistsInRepository_Null()
-        {
-            // Arrange & Act & Assert
-            Assert.Null(_fixture.UnitOfWork.FakeEntityRepository.Get(0));
-        }
-
-        [Fact]
-        public void GetTModel_EntityExistsInRepository_Model()
-        {
-            // Arrange & Act & Assert
-            ObjectAssert.ValueEquals(_fixture.ExistingFakeModel, _fixture.UnitOfWork.FakeEntityRepository.Get<FakeModel>(_fixture.DataMapper, _fixture.ExistingFakeModel.Id));
-        }
-
-        [Fact]
-        public void GetTModel_EntityNotExistsInRepository_Null()
-        {
-            // Arrange & Act & Assert
-            Assert.Null(_fixture.UnitOfWork.FakeEntityRepository.Get<FakeModel>(_fixture.DataMapper, 0));
-        }
-
-        #endregion
 
         #region Query
 
@@ -362,20 +331,6 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
 
         #region Exists
 
-        [Fact]
-        public void Exists_EntityExistsInRepository_True()
-        {
-            // Arrange & Act & Assert
-            Assert.True(_fixture.UnitOfWork.FakeEntityRepository.Exists(_fixture.ExistingFakeEntity.Id));
-        }
-
-        [Fact]
-        public void Exists_EntityNotExistsInRepository_False()
-        {
-            // Arrange & Act & Assert
-            Assert.False(_fixture.UnitOfWork.FakeEntityRepository.Exists(0));
-        }
-
         [Theory]
         [MemberData(nameof(QueryParametersMemberData))]
         public void ExistsQueryParameters_Success(QueryParameters<FakeEntity, int> queryParameters, IQueryable<FakeEntity> queryable, IQueryable<FakeEntity> countQueryable)
@@ -483,6 +438,10 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             var repository = new Repository<FakeEntity, int>(fakeDbContext);
 
             // Act
+            var a = repository.Get(id);
+            var b = repository.Get(x => (object) x.Id == (object) id);
+            var c = repository.Get(x => x.Id.Equals(id));
+
             repository.Delete(id);
             fakeDbContext.SaveChanges();
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aurochses.Data.Query;
 using Microsoft.EntityFrameworkCore;
+using Aurochses.Data.Helpers;
 
 namespace Aurochses.Data.EntityFrameworkCore
 {
@@ -39,68 +40,12 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <value>The database set.</value>
         protected DbSet<TEntity> DbSet => DbContext.Set<TEntity>();
 
-        private IQueryable<TEntity> Where(TType id)
-        {
-            return DbSet.Where(x => x.Id.Equals(id));
-        }
-
-        private IQueryable<TModel> Where<TModel>(IDataMapper dataMapper, TType id)
-        {
-            return dataMapper.Map<TModel>(Where(id));
-        }
-
-        /// <summary>
-        /// Gets entity of type T from repository by identifier.
-        /// If no entity is found, then null is returned.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns><cref>TEntity</cref>.</returns>
-        public virtual TEntity Get(TType id)
-        {
-            return Where(id).FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Gets model of type T from repository by identifier.
-        /// </summary>
-        /// <typeparam name="TModel">The type of the T model.</typeparam>
-        /// <param name="dataMapper">The data mapper.</param>
-        /// <param name="id">The identifier.</param>
-        /// <returns><cref>TModel</cref></returns>
-        public virtual TModel Get<TModel>(IDataMapper dataMapper, TType id)
-        {
-            return Where<TModel>(dataMapper, id).FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Asynchronously gets entity of type T from repository by identifier.
-        /// If no entity is found, then null is returned.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns><cref>TEntity</cref>.</returns>
-        public virtual async Task<TEntity> GetAsync(TType id)
-        {
-            return await Where(id).FirstOrDefaultAsync();
-        }
-
-        /// <summary>
-        /// Asynchronously gets model of type T from repository by identifier.
-        /// </summary>
-        /// <typeparam name="TModel">The type of the T model.</typeparam>
-        /// <param name="dataMapper">The data mapper.</param>
-        /// <param name="id">The identifier.</param>
-        /// <returns><cref>Task{TModel}</cref>.</returns>
-        public virtual async Task<TModel> GetAsync<TModel>(IDataMapper dataMapper, TType id)
-        {
-            return await Where<TModel>(dataMapper, id).FirstOrDefaultAsync();
-        }
-
         /// <summary>
         /// Gets query of type T for repository that satisfies a query parameters.
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
-        protected IQueryable<TEntity> Query(QueryParameters<TEntity, TType> queryParameters = null)
+        protected virtual IQueryable<TEntity> Query(QueryParameters<TEntity, TType> queryParameters = null)
         {
             IQueryable<TEntity> query = DbSet;
 
@@ -135,9 +80,57 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="dataMapper">The data mapper.</param>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
-        protected IQueryable<TModel> Query<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        protected virtual IQueryable<TModel> Query<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
         {
             return dataMapper.Map<TModel>(Query(queryParameters));
+        }
+
+        /// <summary>
+        /// Gets entity of type T from repository that satisfies a query parameters.
+        /// If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>TEntity</cref>.</returns>
+        public virtual TEntity Get(QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            return Query(queryParameters).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets model of type T from repository that satisfies a query parameters.
+        /// If no entity is found, then null is returned.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="dataMapper">The data mapper.</param>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>TModel</cref></returns>
+        public virtual TModel Get<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            return Query<TModel>(dataMapper, queryParameters).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Asynchronously gets entity of type T from repository that satisfies a query parameters.
+        /// If no entity is found, then null is returned.
+        /// </summary>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>Task{TEntity}</cref>.</returns>
+        public virtual async Task<TEntity> GetAsync(QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            return await Query(queryParameters).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Asynchronously gets model of type T from repository that satisfies a query parameters.
+        /// If no entity is found, then null is returned.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the T model.</typeparam>
+        /// <param name="dataMapper">The data mapper.</param>
+        /// <param name="queryParameters">Query parameters.</param>
+        /// <returns><cref>Task{TModel}</cref>.</returns>
+        public virtual async Task<TModel> GetAsync<TModel>(IDataMapper dataMapper, QueryParameters<TEntity, TType> queryParameters = null)
+        {
+            return await Query<TModel>(dataMapper, queryParameters).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -166,7 +159,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// Asynchronously gets entities of type T from repository that satisfies a query parameters.
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
-        /// <returns><cref>IList{TEntity}</cref>.</returns>
+        /// <returns><cref>Task{IList{TModel}}</cref>.</returns>
         public virtual async Task<IList<TEntity>> GetListAsync(QueryParameters<TEntity, TType> queryParameters = null)
         {
             return await Query(queryParameters).ToListAsync();
@@ -189,7 +182,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
-        protected IQueryable<TEntity> PagedResultQuery(QueryParameters<TEntity, TType> queryParameters)
+        protected virtual IQueryable<TEntity> PagedResultQuery(QueryParameters<TEntity, TType> queryParameters)
         {
             if (queryParameters == null) throw new ArgumentNullException(nameof(queryParameters), "Query Parameters can't be null.");
 
@@ -297,26 +290,6 @@ namespace Aurochses.Data.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Checks if entity of type T with identifier exists in repository.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns><c>true</c> if exists, <c>false</c> otherwise.</returns>
-        public virtual bool Exists(TType id)
-        {
-            return Where(id).Any();
-        }
-
-        /// <summary>
-        /// Asynchronously checks if entity of type T with identifier exists in repository.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns><c>true</c> if exists, <c>false</c> otherwise.</returns>
-        public virtual async Task<bool> ExistsAsync(TType id)
-        {
-            return await Where(id).AnyAsync();
-        }
-
-        /// <summary>
         /// Checks if any entity of type T satisfies a query parameters.
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
@@ -341,7 +314,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// </summary>
         /// <param name="queryParameters">Query parameters.</param>
         /// <returns><cref>IQueryable{TEntity}</cref>.</returns>
-        protected IQueryable<TEntity> CountQuery(QueryParameters<TEntity, TType> queryParameters = null)
+        protected virtual IQueryable<TEntity> CountQuery(QueryParameters<TEntity, TType> queryParameters = null)
         {
             IQueryable<TEntity> query = DbSet;
 
@@ -449,7 +422,7 @@ namespace Aurochses.Data.EntityFrameworkCore
         /// <param name="id">The identifier.</param>
         public virtual void Delete(TType id)
         {
-            Delete(Get(id));
+            Delete(this.Get(id));
         }
 
         /// <summary>
