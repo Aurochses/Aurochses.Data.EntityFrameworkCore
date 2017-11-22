@@ -425,31 +425,6 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         #region Delete
 
         [Fact]
-        public void DeleteById_ExistingEntity_Deleted()
-        {
-            // Arrange
-            const int id = 20;
-
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(DeleteById_ExistingEntity_Deleted));
-            var fakeDbContext = new FakeDbContext(dbContextOptionsBuilder.Options, "dbo");
-            fakeDbContext.Add(new FakeEntity { Id = id });
-            fakeDbContext.SaveChanges();
-
-            var repository = new Repository<FakeEntity, int>(fakeDbContext);
-
-            // Act
-            var a = repository.Get(id);
-            var b = repository.Get(x => (object) x.Id == (object) id);
-            var c = repository.Get(x => x.Id.Equals(id));
-
-            repository.Delete(id);
-            fakeDbContext.SaveChanges();
-
-            // Assert
-            Assert.False(fakeDbContext.Set<FakeEntity>().Any(x => x.Id == id));
-        }
-
-        [Fact]
         public void Delete_ExistingEntity_Deleted()
         {
             // Arrange
