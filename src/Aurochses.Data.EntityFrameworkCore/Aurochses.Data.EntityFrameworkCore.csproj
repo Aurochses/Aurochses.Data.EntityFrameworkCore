@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
-    <Version>1.2.2</Version>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>2.0.0</Version>
     <Authors>Aurochses</Authors>
     <Company>Aurochses</Company>
     <Copyright>Aurochses 2017</Copyright>
@@ -18,20 +18,20 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard1.4\Aurochses.Data.EntityFrameworkCore.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netstandard2.0\Aurochses.Data.EntityFrameworkCore.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard1.4\Aurochses.Data.EntityFrameworkCore.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\netstandard2.0\Aurochses.Data.EntityFrameworkCore.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aurochses.Data" Version="1.2.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.3" />
+    <PackageReference Include="Aurochses.Data" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
   </ItemGroup>
 
 </Project>
