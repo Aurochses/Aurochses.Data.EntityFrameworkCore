@@ -7,7 +7,6 @@ using System.Linq;
 using Aurochses.Data.Query;
 using Aurochses.Xunit;
 using Xunit;
-using Aurochses.Data.Helpers;
 
 namespace Aurochses.Data.EntityFrameworkCore.Tests
 {
