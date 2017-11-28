@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aurochses.Data.Query;
 using Microsoft.EntityFrameworkCore;
-using Aurochses.Data.Helpers;
 
 namespace Aurochses.Data.EntityFrameworkCore
 {
