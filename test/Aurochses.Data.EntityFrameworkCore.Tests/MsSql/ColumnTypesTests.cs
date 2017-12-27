@@ -13,6 +13,13 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests.MsSql
         }
 
         [Fact]
+        public void NVarCharMax_Value_Equals()
+        {
+            // Arrange & Act & Assert
+            Assert.Equal("nvarchar(max)", ColumnTypes.NVarCharMax);
+        }
+
+        [Fact]
         public void Money_Value_Equals()
         {
             // Arrange & Act & Assert

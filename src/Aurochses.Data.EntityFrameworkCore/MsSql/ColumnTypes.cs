@@ -11,6 +11,11 @@
         public const string NVarChar = "nvarchar";
 
         /// <summary>
+        /// The NVarChar max
+        /// </summary>
+        public const string NVarCharMax = "nvarchar(max)";
+
+        /// <summary>
         /// The Money
         /// </summary>
         public const string Money = "decimal(18,4)";
