@@ -250,7 +250,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         {
             ValidateQueryParametersMemberData(queryable, countQueryable);
 
-            if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
+            if (queryParameters?.Page == null || queryParameters.Page.IsValid == false) return;
 
             // Arrange & Act
             var expected = queryable.Expression.ToString();
@@ -266,7 +266,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         {
             ValidateQueryParametersMemberData(queryable, countQueryable);
 
-            if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
+            if (queryParameters?.Page == null || queryParameters.Page.IsValid == false) return;
 
             // Arrange & Act
             var expected = _fixture.DataMapper.Map<FakeModel>(queryable).Expression.ToString();
@@ -286,7 +286,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         {
             ValidateQueryParametersMemberData(queryable, countQueryable);
 
-            if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
+            if (queryParameters?.Page == null || queryParameters.Page.IsValid == false) return;
 
             // Arrange
             var pagedResultQuery = _fixture.UnitOfWork.FakeEntityRepository.ProtectedPagedResultQuery(queryParameters);
