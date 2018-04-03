@@ -309,7 +309,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         {
             ValidateQueryParametersMemberData(queryable, countQueryable);
 
-            if (queryParameters == null || queryParameters.Page == null || queryParameters.Page.IsValid == false) return;
+            if (queryParameters?.Page == null || queryParameters.Page.IsValid == false) return;
 
             // Arrange
             var pagedResultQuery = _fixture.UnitOfWork.FakeEntityRepository.ProtectedPagedResultQuery<FakeModel>(_fixture.DataMapper, queryParameters);
