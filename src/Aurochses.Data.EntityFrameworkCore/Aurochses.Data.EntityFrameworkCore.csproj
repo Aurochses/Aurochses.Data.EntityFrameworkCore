@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.0.5</Version>
+    <Version>2.1.0</Version>
     <Authors>Aurochses</Authors>
     <Company>Aurochses</Company>
     <Description>Layer to access database with Unit of Work, Repository and Entity classes for Entity Framework Core.</Description>
