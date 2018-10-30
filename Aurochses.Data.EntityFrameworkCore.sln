@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F8B145FD-BAEC-40B4-BBBC-4E16D30B6164}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3BF7609B-8637-4C98-AA2F-D6CF3B13291E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1AA9D91A-4774-4847-937C-1271F0B33AC5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CDF704F2-094F-4C32-9473-A813854D8BE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurochses.Data.EntityFrameworkCore", "src\Aurochses.Data.EntityFrameworkCore\Aurochses.Data.EntityFrameworkCore.csproj", "{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurochses.Data.EntityFrameworkCore", "src\Aurochses.Data.EntityFrameworkCore\Aurochses.Data.EntityFrameworkCore.csproj", "{59ECF789-2ED4-4833-A3C8-9EA97EE59C48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurochses.Data.EntityFrameworkCore.Tests", "test\Aurochses.Data.EntityFrameworkCore.Tests\Aurochses.Data.EntityFrameworkCore.Tests.csproj", "{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurochses.Data.EntityFrameworkCore.Tests", "test\Aurochses.Data.EntityFrameworkCore.Tests\Aurochses.Data.EntityFrameworkCore.Tests.csproj", "{F3A08C73-9345-4B75-9C2F-2DE925EF6519}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,20 +17,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59ECF789-2ED4-4833-A3C8-9EA97EE59C48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59ECF789-2ED4-4833-A3C8-9EA97EE59C48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59ECF789-2ED4-4833-A3C8-9EA97EE59C48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59ECF789-2ED4-4833-A3C8-9EA97EE59C48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3A08C73-9345-4B75-9C2F-2DE925EF6519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3A08C73-9345-4B75-9C2F-2DE925EF6519}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3A08C73-9345-4B75-9C2F-2DE925EF6519}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3A08C73-9345-4B75-9C2F-2DE925EF6519}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{4E7EE982-438F-4C05-A049-FAE6BDD8C5A8} = {F8B145FD-BAEC-40B4-BBBC-4E16D30B6164}
-		{FBE5332C-ECAD-4B3F-85F0-DBCFBF004C40} = {1AA9D91A-4774-4847-937C-1271F0B33AC5}
+		{59ECF789-2ED4-4833-A3C8-9EA97EE59C48} = {3BF7609B-8637-4C98-AA2F-D6CF3B13291E}
+		{F3A08C73-9345-4B75-9C2F-2DE925EF6519} = {CDF704F2-094F-4C32-9473-A813854D8BE8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1D7F7045-B121-4C49-A3C2-3B8DBADC57E8}
 	EndGlobalSection
 EndGlobal

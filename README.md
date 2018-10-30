@@ -10,9 +10,8 @@ Aurochses Data Entity Framework Core is a layer to access database with Unit of 
 
 ## Builds
 
-Type            | Status 
+Branch          | Status 
 ----------------|--------
-CI (develop)    | [![Visual Studio Team services](https://img.shields.io/vso/build/aurochses/784be346-9d3f-458f-95d8-5f1a8b5e1227/180.svg?style=flat-square)](https://aurochses.visualstudio.com/Aurochses.CSharp/_build/index?definitionId=180)
-CI (pre-master) | [![Visual Studio Team services](https://img.shields.io/vso/build/aurochses/784be346-9d3f-458f-95d8-5f1a8b5e1227/185.svg?style=flat-square)](https://aurochses.visualstudio.com/Aurochses.CSharp/_build/index?definitionId=185)
-PR (latest)     | [![Visual Studio Team services](https://img.shields.io/vso/build/aurochses/784be346-9d3f-458f-95d8-5f1a8b5e1227/186.svg?style=flat-square)](https://aurochses.visualstudio.com/Aurochses.CSharp/_build/index?definitionId=186)
-NuGet           | [![Visual Studio Team services](https://img.shields.io/vso/build/aurochses/784be346-9d3f-458f-95d8-5f1a8b5e1227/187.svg?style=flat-square)](https://aurochses.visualstudio.com/Aurochses.CSharp/_build/index?definitionId=187)
+develop    | [![Build status](https://aurochses.visualstudio.com/Aurochses.GitHub/_apis/build/status/Aurochses.Data.EntityFrameworkCore_CI?branchName=develop)](https://aurochses.visualstudio.com/Aurochses.GitHub/_build/latest?definitionId=376)
+pre-master | [![Build status](https://aurochses.visualstudio.com/Aurochses.GitHub/_apis/build/status/Aurochses.Data.EntityFrameworkCore_CI?branchName=pre-master)](https://aurochses.visualstudio.com/Aurochses.GitHub/_build/latest?definitionId=376)
+master     | [![Build status](https://aurochses.visualstudio.com/Aurochses.GitHub/_apis/build/status/Aurochses.Data.EntityFrameworkCore_CI?branchName=master)](https://aurochses.visualstudio.com/Aurochses.GitHub/_build/latest?definitionId=376)
