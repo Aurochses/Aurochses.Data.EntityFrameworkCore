@@ -1,5 +1,4 @@
 ﻿using Aurochses.Data.EntityFrameworkCore.Tests.Fakes;
-using Aurochses.Data.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Moq;

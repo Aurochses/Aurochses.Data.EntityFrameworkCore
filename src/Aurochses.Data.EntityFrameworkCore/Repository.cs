@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Aurochses.Data.Query;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aurochses.Data.EntityFrameworkCore
