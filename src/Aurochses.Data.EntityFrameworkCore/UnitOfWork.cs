@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Aurochses.Data.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aurochses.Data.EntityFrameworkCore
