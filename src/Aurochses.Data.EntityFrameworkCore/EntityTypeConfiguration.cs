@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aurochses.Data.EntityFrameworkCore
 {
@@ -7,7 +8,7 @@ namespace Aurochses.Data.EntityFrameworkCore
     /// </summary>
     /// <typeparam name="TEntity">The type of the T entity.</typeparam>
     /// <typeparam name="TKey">The type of the T key.</typeparam>
-    public abstract class EntityTypeConfiguration<TEntity, TKey>
+    public abstract class EntityTypeConfiguration<TEntity, TKey> : IEntityTypeConfiguration<TEntity>
         where TEntity : class, IEntity<TKey>
     {
         /// <summary>
@@ -26,9 +27,9 @@ namespace Aurochses.Data.EntityFrameworkCore
         public string SchemaName { get; }
 
         /// <summary>
-        /// Maps the specified entity type builder.
+        /// Configures the entity of type <typeparamref name="TEntity" />.
         /// </summary>
-        /// <param name="entityTypeBuilder">The entity type builder.</param>
-        public abstract void Map(EntityTypeBuilder<TEntity> entityTypeBuilder);
+        /// <param name="builder">The builder to be used to configure the entity type.</param>
+        public abstract void Configure(EntityTypeBuilder<TEntity> builder);
     }
 }
