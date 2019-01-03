@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Aurochses.Data.EntityFrameworkCore</PackageId>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
     <Authors>Aurochses</Authors>
     <Company>Aurochses</Company>
     <Description>Aurochses.Data.EntityFrameworkCore is a library to access database with Unit of Work, Repository and Entity classes for Entity Framework Core.</Description>
