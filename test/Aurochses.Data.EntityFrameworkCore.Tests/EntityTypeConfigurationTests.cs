@@ -28,10 +28,10 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
             var entityTypeBuilder = modelBuilder.Entity<Entity<int>>();
 
             var mockEntityTypeConfiguration = new Mock<EntityTypeConfiguration<Entity<int>, int>>(MockBehavior.Strict, "dbo");
-            mockEntityTypeConfiguration.Setup(m => m.Map(entityTypeBuilder)).Verifiable();
+            mockEntityTypeConfiguration.Setup(m => m.Configure(entityTypeBuilder)).Verifiable();
 
             // Act
-            mockEntityTypeConfiguration.Object.Map(entityTypeBuilder);
+            mockEntityTypeConfiguration.Object.Configure(entityTypeBuilder);
 
             // Assert
             mockEntityTypeConfiguration.Verify();
