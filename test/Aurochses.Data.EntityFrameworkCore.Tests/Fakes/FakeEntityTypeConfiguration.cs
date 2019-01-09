@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aurochses.Data.EntityFrameworkCore.Tests.Fakes
 {
+    [ExcludeFromCodeCoverage]
     public class FakeEntityTypeConfiguration
         : EntityTypeConfiguration<Entity<int>, int>
     {
