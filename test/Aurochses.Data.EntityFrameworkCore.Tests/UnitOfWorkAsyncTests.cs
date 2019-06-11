@@ -27,10 +27,10 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         }
 
         [Fact]
-        public async Task CommitAsync_UdateNonexistentEntity_DataStorageException()
+        public async Task CommitAsync_UpdateNonexistentEntity_DataStorageException()
         {
             // Arrange
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(CommitAsync_UdateNonexistentEntity_DataStorageException));
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(CommitAsync_UpdateNonexistentEntity_DataStorageException));
             var unitOfWork = new FakeUnitOfWork(
                 dbContext => new FakeRepository(dbContext),
                 dbContextOptionsBuilder.Options,

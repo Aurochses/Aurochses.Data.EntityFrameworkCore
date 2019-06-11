@@ -10,7 +10,7 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
     {
         public RepositoryFixture()
         {
-            // automapper
+            // AutoMapper
             Mapper.Reset();
             Mapper.Initialize(cfg => cfg.CreateMap<Entity<int>, FakeModel>());
 

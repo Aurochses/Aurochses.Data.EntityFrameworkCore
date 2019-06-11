@@ -50,25 +50,16 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
 
             using (unitOfWork = new FakeUnitOfWork())
             {
-                var repository = unitOfWork.FakeEntityRepository;
-
-                if (repository == null) throw new ArgumentNullException(nameof(repository));
+                Assert.NotNull(unitOfWork.FakeEntityRepository);
             }
 
             // Act
             unitOfWork.Dispose();
 
             // Assert
-            try
-            {
-                var repository = unitOfWork.FakeEntityRepository;
+            var repository = unitOfWork.FakeEntityRepository;
 
-                if (repository == null) throw new ArgumentNullException(nameof(repository));
-            }
-            catch(Exception ex)
-            {
-                Assert.IsType<ObjectDisposedException>(ex);
-            }
+            Assert.NotNull(repository);
         }
 
         [Fact]
@@ -109,10 +100,10 @@ namespace Aurochses.Data.EntityFrameworkCore.Tests
         }
 
         [Fact]
-        public void Commit_UdateNonexistentEntity_DataStorageException()
+        public void Commit_UpdateNonexistentEntity_DataStorageException()
         {
             // Arrange
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Commit_UdateNonexistentEntity_DataStorageException));
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<DbContext>().UseInMemoryDatabase(nameof(Commit_UpdateNonexistentEntity_DataStorageException));
             var unitOfWork = new FakeUnitOfWork(
                 dbContext => new FakeRepository(dbContext),
                 dbContextOptionsBuilder.Options,
